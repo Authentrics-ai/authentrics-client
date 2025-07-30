@@ -1,0 +1,107 @@
+from .base_handler import BaseHandler
+
+__all__ = ["AdminHandler"]
+
+
+class AdminHandler(BaseHandler):
+    """Handler for the admin API.
+
+    To access this API, you need to be logged in as an admin user.
+    """
+
+    def get_admin_info(self) -> dict:
+        """Get the info of the current admin user."""
+        return self.get("/api/auth/admin").json()
+
+    def create_admin_user(
+        self,
+        username: str,
+        email: str,
+        password: str,
+        first_name: str,
+        last_name: str,
+    ) -> dict:
+        """Create a new admin user."""
+        return self.post(
+            "/api/auth/admin",
+            json={
+                "username": username,
+                "email": email,
+                "password": password,
+                "first_name": first_name,
+                "last_name": last_name,
+            },
+        ).json()
+
+    def get_all_users(self) -> list[dict]:
+        """Get all users."""
+        return self.get("/api/auth/admin/user").json()
+
+    def create_new_user(
+        self, username: str, email: str, password: str, first_name: str, last_name: str
+    ) -> dict:
+        """Create a new user."""
+        return self.post(
+            "/api/auth/admin/user",
+            json={
+                "username": username,
+                "email": email,
+                "password": password,
+                "first_name": first_name,
+                "last_name": last_name,
+            },
+        ).json()
+
+    def delete_admin(self, user_id: str, email: str) -> dict:
+        """Delete a user."""
+        return self.delete(
+            f"/api/auth/admin/{user_id}", json={"emailAddress": email}
+        ).json()
+
+    def update_admin(
+        self,
+        user_id: str,
+        email: str | None = None,
+        roles: list[str] | None = None,
+        enabled: bool | None = None,
+    ) -> dict:
+        """Update a user."""
+        data = {}
+        if email is not None:
+            data["emailAddress"] = email
+        if roles is not None:
+            data["roles"] = roles
+        if enabled is not None:
+            data["enabled"] = enabled
+        return self.patch(f"/api/auth/admin/{user_id}", json=data).json()
+
+    def delete_user(self, user_id: str, email: str) -> dict:
+        """Delete a user."""
+        return self.delete(
+            f"/api/auth/admin/user/{user_id}", json={"emailAddress": email}
+        ).json()
+
+    def update_user(
+        self,
+        user_id: str,
+        email: str | None = None,
+        roles: list[str] | None = None,
+        enabled: bool | None = None,
+    ) -> dict:
+        """Update a user."""
+        data = {}
+        if email is not None:
+            data["emailAddress"] = email
+        if roles is not None:
+            data["roles"] = roles
+        if enabled is not None:
+            data["enabled"] = enabled
+        return self.patch(f"/api/auth/admin/user/{user_id}", json=data).json()
+
+    def get_user_by_email(self, email: str) -> dict | None:
+        """Get a user by email."""
+        all_users = self.get_all_users()
+        for user in all_users:
+            if user["emailAddress"] == email:
+                return user
+        return None
