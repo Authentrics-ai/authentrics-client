@@ -4,7 +4,7 @@ except ImportError:
     raise ImportError(
         "The CLI module requires the 'cli' extra to be installed. "
         "Please install with: pip install authentrics-client[cli]"
-    )
+    ) from None
 
 from .cli import cli
 

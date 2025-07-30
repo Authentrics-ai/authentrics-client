@@ -5,7 +5,7 @@ except ImportError:
     raise ImportError(
         "The transformers module requires the 'transformers' extra to be installed. "
         "Please install with: pip install authentrics-client[transformers]"
-    )
+    ) from None
 
 from .callback import AuthentricsCallback
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from .base_handler import BaseHandler
 from ..types import FileType, generate_multipart_json
+from .base_handler import BaseHandler
 
 __all__ = ["ProjectHandler"]
 

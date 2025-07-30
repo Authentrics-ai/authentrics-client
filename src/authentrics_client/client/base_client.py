@@ -13,7 +13,11 @@ class BaseClient:
     Usage:
         >>> client = BaseClient("https://api.authentrics.ai")
         >>> client.get("/v3/api-docs")
-        >>> client.post("/project", json={"name": "test", "description": "test", "format": "onnx"})
+        >>> client.post("/project", json={
+        ...     "name": "test",
+        ...     "description": "test",
+        ...     "format": "onnx"
+        ... })
     """
 
     def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
@@ -40,9 +44,7 @@ class BaseClient:
 
     def _request(self, request_method: MethodType, route: str, **kwargs):
         """A helper method for making requests to the API server."""
-        response = self._session.request(
-            request_method, self.base_url + route, **kwargs
-        )
+        response = self._session.request(request_method, self.base_url + route, **kwargs)
         response.raise_for_status()
         return response
 

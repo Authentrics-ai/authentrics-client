@@ -27,7 +27,8 @@ class AuthentricsClient(BaseClient):
 
         Args:
             base_url: The base URL of the Authentrics API.
-            proxy_url: Optional proxy URL to use for requests. If not provided, no proxy will be used.
+            proxy_url: Optional proxy URL to use for requests. If not provided, no proxy
+            will be used.
         """
         super().__init__(base_url, proxy_url)
         self._session.headers["clientName"] = "authrx-client"
@@ -57,7 +58,9 @@ class AuthentricsClient(BaseClient):
 
     @property
     def dynamic(self) -> DynamicHandler:
-        """Handler for running dynamic analysis (analysis during inference) on a checkpoint."""
+        """Handler for running dynamic analysis (analysis during inference) on a
+        checkpoint.
+        """
         return self._dynamic
 
     @property

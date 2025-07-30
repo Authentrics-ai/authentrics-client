@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Any
 
-from .base_handler import BaseHandler
 from ..types import Comparison
+from .base_handler import BaseHandler
 
 __all__ = ["StaticHandler"]
 
@@ -111,14 +111,13 @@ class StaticHandler(BaseHandler):
             overwrite: Whether to overwrite the new checkpoint if it already exists.
             If False, an error will be raised if the new checkpoint already exists.
 
-        Note: For the amplitudes, 0.0 means the influence of the checkpoint is not changed,
-        1.0 means the influence of the checkpoint is fully applied, and -1.0 means the
-        influence of the checkpoint is fully removed (as in `StaticHandler.exclude()`).
+        Note: For the amplitudes, 0.0 means the influence of the checkpoint is not
+        changed, 1.0 means the influence of the checkpoint is fully applied, and -1.0
+        means the influence of the checkpoint is fully removed (as in
+        `StaticHandler.exclude()`).
         """
         if len(checkpoints_to_tune) != len(amplitudes):
-            raise ValueError(
-                "checkpoints_to_tune and amplitudes must be the same length"
-            )
+            raise ValueError("checkpoints_to_tune and amplitudes must be the same length")
 
         new_checkpoint_path = Path(new_checkpoint_path)
         if new_checkpoint_path.exists() and not overwrite:
