@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Any
 
 from .base_handler import BaseHandler
-from authentrics_api.types import Comparison
+from ..types import Comparison
 
 __all__ = ["StaticHandler"]
 

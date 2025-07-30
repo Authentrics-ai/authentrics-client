@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from .base_handler import BaseHandler
-from authentrics_api.types import FileType, generate_multipart_json
+from ..types import FileType, generate_multipart_json
 
 __all__ = ["ProjectHandler"]
 

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Any
 
-from authentrics_api.types import Comparison, generate_multipart_json
+from ..types import Comparison, generate_multipart_json
 from .base_handler import BaseHandler
 
 __all__ = ["DynamicHandler"]
