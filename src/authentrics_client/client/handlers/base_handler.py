@@ -1,5 +1,5 @@
-from authentrics_api.client.base_client import BaseClient
-from authentrics_api.types import MethodType
+from ..base_client import BaseClient
+from ..types import MethodType
 
 __all__ = ["BaseHandler"]
 
