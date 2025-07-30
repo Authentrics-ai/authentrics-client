@@ -82,7 +82,7 @@ def login(env, username, password):
 
 
 @click.group()
-@click.version_option(package_name="authentrics-api")
+@click.version_option(package_name="authentrics-client")
 def cli():
     """AuthRX CLI - Authentrics Command Line Tool"""
     pass
