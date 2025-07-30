@@ -114,7 +114,6 @@ def decode_token(token: str) -> dict:
         The decoded token payload as a dictionary
 
     Raises:
-        jwt.InvalidTokenError: If the token is invalid or cannot be decoded
         ValueError: If the token is invalid or cannot be decoded
     """
     try:
@@ -129,4 +128,4 @@ def decode_token(token: str) -> dict:
     except jwt.InvalidSignatureError:
         raise ValueError("Invalid token signature") from None
     except jwt.InvalidTokenError as e:
-        raise ValueError(f"Invalid token: {e}") from None
+        raise ValueError("Invalid token") from e
