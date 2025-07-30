@@ -1,6 +1,8 @@
 import os
+from datetime import datetime
 from getpass import getpass
 
+import jwt
 import requests
 
 from .base_handler import BaseHandler
@@ -31,23 +33,8 @@ class AuthenticationHandler(BaseHandler):
         """
 
         if token is not None:
-            old_authorization = self._session.headers.get("Authorization")
-            self._session.headers["Authorization"] = f"Bearer {token}"
-            try:
-                self.get("/project")
-                return
-            except requests.HTTPError as e:
-                if old_authorization is not None:
-                    self._session.headers["Authorization"] = old_authorization
-                else:
-                    self._session.headers.pop("Authorization")
-
-                if e.response.status_code == 401:
-                    raise ValueError("Expired token") from e
-                elif e.response.status_code == 403:
-                    raise ValueError("Invalid token") from e
-                else:
-                    raise e
+            self._validate_and_set_token(token)
+            return
 
         username = username or os.getenv("AAI_USERNAME")
         password = password or os.getenv("AAI_PASSWORD")
@@ -60,7 +47,7 @@ class AuthenticationHandler(BaseHandler):
             "/api/auth/login",
             json={"username": username, "password": password},
         ).content.decode()
-        self._session.headers["Authorization"] = f"Bearer {token}"
+        self._validate_and_set_token(token)
 
     def register(
         self,
@@ -81,3 +68,65 @@ class AuthenticationHandler(BaseHandler):
                 "lastName": last_name,
             },
         )
+
+    def _validate_and_set_token(self, token: str) -> None:
+        """Validate a token.
+
+        If the token is invalid, the old authorization header will be restored.
+        """
+
+        decoded = decode_token(token)
+        if decoded["exp"] < datetime.now().timestamp():
+            raise ValueError("Token has expired")
+
+        old_authorization = self._session.headers.get("Authorization")
+        self._session.headers["Authorization"] = f"Bearer {token}"
+
+        # Is this a valid user token?
+        try:
+            self.get("/api/auth/user")
+            return
+        except requests.HTTPError:
+            pass
+
+        # Is this a valid admin token?
+        try:
+            self.get("/api/auth/admin")
+            return
+        except requests.HTTPError:
+            pass
+
+        if old_authorization is not None:
+            self._session.headers["Authorization"] = old_authorization
+        else:
+            self._session.headers.pop("Authorization")
+
+        raise ValueError("Invalid token")
+
+
+def decode_token(token: str) -> dict:
+    """Decode a JWT token using the HS384 algorithm.
+
+    Args:
+        token: The JWT token to decode
+
+    Returns:
+        The decoded token payload as a dictionary
+
+    Raises:
+        jwt.InvalidTokenError: If the token is invalid or cannot be decoded
+        ValueError: If the token is invalid or cannot be decoded
+    """
+    try:
+        decoded = jwt.decode(
+            token,
+            algorithms=["HS384"],
+            options={"verify_signature": False},
+        )
+        return decoded
+    except jwt.ExpiredSignatureError:
+        raise ValueError("Token has expired") from None
+    except jwt.InvalidSignatureError:
+        raise ValueError("Invalid token signature") from None
+    except jwt.InvalidTokenError as e:
+        raise ValueError(f"Invalid token: {e}") from None

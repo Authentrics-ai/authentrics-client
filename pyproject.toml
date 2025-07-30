@@ -10,7 +10,7 @@ authors = [
 ]
 readme = "README.md"
 requires-python = ">=3.9,<4.0"
-dependencies = ["requests (>=2.32.4,<3.0.0)"]
+dependencies = ["requests (>=2.32.4,<3.0.0)", "pyjwt (>=2.10.1,<3.0.0)"]
 
 [project.scripts]
 authrx = "authentrics_client.cli.cli:cli"
