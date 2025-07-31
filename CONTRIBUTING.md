@@ -27,7 +27,7 @@ pip install poetry
 ### 2. Clone the Repository
 
 ```bash
-git clone https://github.com/Authentrics-ai/authentrics-client
+git clone git@github.com:Authentrics-ai/authentrics-client.git
 cd authentrics-client
 ```
 
