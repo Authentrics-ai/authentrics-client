@@ -112,7 +112,7 @@ class DynamicHandler(BaseHandler):
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "comparisonType": comparison,
+            "comparisonType": Comparison(comparison).value,
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
@@ -152,7 +152,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
-            "comparisonType": comparison,
+            "comparisonType": Comparison(comparison).value,
         }
         if layer_names is not None:
             data["layerNames"] = layer_names

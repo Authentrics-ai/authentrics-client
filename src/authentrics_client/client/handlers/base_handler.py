@@ -40,7 +40,9 @@ class BaseHandler:
         Raises:
             requests.exceptions.HTTPError: If the request fails
         """
-        response = self._session.request(request_method, self._base_url + route, **kwargs)
+        response = self._session.request(
+            request_method.value, self._base_url + route, **kwargs
+        )
         response.raise_for_status()
         return response
 

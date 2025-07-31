@@ -44,7 +44,9 @@ class BaseClient:
 
     def _request(self, request_method: MethodType, route: str, **kwargs):
         """A helper method for making requests to the API server."""
-        response = self._session.request(request_method, self.base_url + route, **kwargs)
+        response = self._session.request(
+            request_method.value, self.base_url + route, **kwargs
+        )
         response.raise_for_status()
         return response
 
