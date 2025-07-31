@@ -7,8 +7,8 @@ A Python client for Authentrics.ai backend libraries that provides tools for mod
 - **Model Analysis**: Static and dynamic analysis of machine learning models
 - **Checkpoint Management**: Upload, manage, and analyze model checkpoints
 - **Authentication**: Secure login and session management
-- **CLI Interface**: Command-line tools for easy interaction
-- **Transformers Integration**: Callback support for Hugging Face Transformers training
+- **CLI Interface**: Command-line tools for easy interactive login
+- **Transformers Integration**: Callback support for 🤗 Transformers training
 
 ## Installation
 
@@ -45,7 +45,7 @@ project = client.project.create_project("My Model Project", "Description")
 # Upload a checkpoint
 result = client.checkpoint.upload_checkpoint(
     project_id=project["id"],
-    file_path="path/to/model.pt",
+    file_path="path/to/model.onnx",
     model_format="onnx",
 )
 ```

@@ -4,7 +4,7 @@ This guide is for Authentrics.ai employees who want to contribute to the Authent
 
 ## Prerequisites
 
-- Python 3.9 or higher
+- Python 3.9 or higher (preferred 3.9 for development)
 - Poetry (for dependency management)
 - Git
 
@@ -27,7 +27,7 @@ pip install poetry
 ### 2. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Authentrics-ai/authentrics-client
 cd authentrics-client
 ```
 
@@ -49,13 +49,13 @@ This project uses Ruff for linting and formatting. The configuration is in `pypr
 
 ```bash
 # Format code
-ruff format src test
+ruff format
 
 # Lint code
-ruff check src test
+ruff check
 
-# Format and lint in one command
-ruff check --fix src test
+# Lint and fix basic issues in one command
+ruff check --fix
 ```
 
 ### Running Tests
@@ -95,16 +95,14 @@ This will create:
 twine check dist/*
 ```
 
-## Publishing Using Google Artifact Registry
-
-If publishing to Google Artifact Registry:
+### 3. Publish Using Google Artifact Registry
 
 ```bash
 # Configure authentication if you're not using a service account
 gcloud auth login
 
 # Upload to GAR
-twine upload --repository-url https://us-python.pkg.dev/authentrics/authentrics-repo/ dist/*
+twine upload --repository-url https://us-central1-python.pkg.dev/authentrics/authentrics-repo/ dist/*
 ```
 
 ## Development Guidelines
