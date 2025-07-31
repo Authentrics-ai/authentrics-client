@@ -6,7 +6,13 @@ import click
 import platformdirs
 import requests
 
-BASE_DIR = Path(platformdirs.user_cache_dir("authrx"))
+BASE_DIR = Path(
+    platformdirs.user_cache_dir(
+        "authrx",
+        "Authentrics.ai",
+        ensure_exists=True,
+    )
+)
 TOKEN_PATH = BASE_DIR / "token.json"
 
 
