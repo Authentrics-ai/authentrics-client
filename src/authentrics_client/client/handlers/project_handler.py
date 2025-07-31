@@ -35,7 +35,11 @@ class ProjectHandler(BaseHandler):
         """Create a project."""
         return self.post(
             "/project",
-            json={"name": name, "description": description, "format": model_format},
+            json={
+                "name": name,
+                "description": description,
+                "format": FileType(model_format).value,
+            },
         ).json()
 
     def delete_project(self, *project_ids: str) -> None:
@@ -57,7 +61,7 @@ class ProjectHandler(BaseHandler):
         if description is not None:
             data["description"] = description
         if model_format is not None:
-            data["format"] = model_format
+            data["format"] = FileType(model_format).value
         return self.patch(
             "/project",
             json={"projectId": project_id, **data},

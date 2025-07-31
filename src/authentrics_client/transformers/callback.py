@@ -20,11 +20,18 @@ logging.basicConfig(
 
 
 class AuthentricsCallback(TrainerCallback):
-    def __init__(self, project_name: str, save_stats_local: bool, *features):
+    def __init__(
+        self,
+        project_name: str,
+        save_stats_local: bool,
+        *features,
+        model_format: str | FileType = FileType.HF_TEXT,
+    ):
         # check if we are logged in and already have a token
         self.session = self._check_authorization()
         self.project_name = project_name
         self.save_stats_local = save_stats_local
+        self.model_format = FileType(model_format)
         self.project = self.session.get_project_by_name(self.project_name)
         if self.project is None:
             logging.info("Project not found, Creating new project")
@@ -75,7 +82,7 @@ class AuthentricsCallback(TrainerCallback):
             json={
                 "project_id": self.project["id"],
                 "file_path": tar_path,
-                "file_type": FileType.HF,
+                "file_type": self.model_format.value,
                 "filename": checkpoint_name,
             },
         )

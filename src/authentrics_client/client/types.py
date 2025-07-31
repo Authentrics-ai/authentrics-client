@@ -1,11 +1,11 @@
-from enum import StrEnum
+from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
 __all__ = ["FileType", "Comparison"]
 
 
-class MethodType(StrEnum):
+class MethodType(Enum):
     """The type of HTTP method to use for a request.
 
     Attributes:
@@ -22,14 +22,8 @@ class MethodType(StrEnum):
     DELETE = "DELETE"
     PATCH = "PATCH"
 
-    def __repr__(self) -> str:
-        return self.value
 
-    def __str__(self) -> str:
-        return self.value
-
-
-class Comparison(StrEnum):
+class Comparison(Enum):
     """The type of comparison to perform.
 
     Attributes:
@@ -84,7 +78,7 @@ def generate_multipart_json(
     return d
 
 
-class FileType(StrEnum):
+class FileType(Enum):
     """The type of a model checkpoint.
 
     Attributes:

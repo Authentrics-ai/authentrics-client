@@ -44,13 +44,9 @@ class CheckpointHandler(BaseHandler):
         if not file_path.is_file():
             raise FileNotFoundError(f"File {file_path} not found")
 
-        # Throw error if model_format is not a valid FileType,
-        # done intrinsically by FileType
-        model_format = FileType(model_format)
-
         data = {
             "projectId": project_id,
-            "format": model_format.value,
+            "format": FileType(model_format).value,
         }
         if checkpoint_name is not None:
             data["name"] = checkpoint_name
@@ -137,12 +133,10 @@ class CheckpointHandler(BaseHandler):
         Returns:
             The project with the new external checkpoint.
         """
-        model_format = FileType(model_format)
-
         data = {
             "projectId": project_id,
             "filePath": file_path,
-            "format": model_format.value,
+            "format": FileType(model_format).value,
             "fileName": file_name or file_path.rsplit("/", 1)[-1],
         }
         if tag is not None:
