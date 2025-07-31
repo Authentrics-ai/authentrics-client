@@ -1,5 +1,4 @@
 import json
-import os
 import time
 from pathlib import Path
 
@@ -39,8 +38,6 @@ def store_token(token: str, url: str):
 
     # Set file permissions to be readable only by the user
     TOKEN_PATH.chmod(0o600)
-
-    os.environ["authrx_token"] = str(TOKEN_PATH)
 
 
 @click.command()
