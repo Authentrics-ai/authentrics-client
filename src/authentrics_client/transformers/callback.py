@@ -4,7 +4,6 @@ import tarfile
 import uuid
 from pathlib import Path
 
-import platformdirs
 from transformers import (
     TrainerCallback,
     TrainerControl,
@@ -13,19 +12,11 @@ from transformers import (
 )
 
 from .. import AuthentricsClient, FileType
+from ..cli import TOKEN_PATH
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
-
-BASE_DIR = Path(
-    platformdirs.user_cache_dir(
-        "authrx",
-        "Authentrics.ai",
-        ensure_exists=True,
-    )
-)
-TOKEN_PATH = BASE_DIR / "token.json"
 
 
 class AuthentricsCallback(TrainerCallback):

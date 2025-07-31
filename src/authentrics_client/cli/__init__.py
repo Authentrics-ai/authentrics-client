@@ -7,5 +7,6 @@ except ImportError:
     ) from None
 
 from .cli import cli
+from .config import TOKEN_PATH
 
-__all__ = ["cli"]
+__all__ = ["cli", "TOKEN_PATH"]

@@ -1,19 +1,10 @@
 import json
 import time
-from pathlib import Path
 
 import click
-import platformdirs
 import requests
 
-BASE_DIR = Path(
-    platformdirs.user_cache_dir(
-        "authrx",
-        "Authentrics.ai",
-        ensure_exists=True,
-    )
-)
-TOKEN_PATH = BASE_DIR / "token.json"
+from .config import BASE_DIR, TOKEN_PATH
 
 
 def parse_url(url: str) -> str:
