@@ -66,7 +66,7 @@ For more detailed examples and use cases, see the [examples directory](./example
 
 ## Documentation
 
-For comprehensive documentation, visit the [Authentrics.ai documentation](https://docs.authentrics.ai).
+For comprehensive documentation, visit the [Authentrics.ai documentation](https://authentrics-team-lrq1a2rkieci.atlassian.net/wiki/spaces/Authentric1/overview).
 
 ## Requirements
 
