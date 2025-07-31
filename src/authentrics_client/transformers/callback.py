@@ -4,6 +4,7 @@ import tarfile
 import uuid
 from pathlib import Path
 
+import platformdirs
 from transformers import (
     TrainerCallback,
     TrainerControl,
@@ -12,17 +13,18 @@ from transformers import (
 )
 
 from .. import AuthentricsClient, FileType
-from ..cli.cli import CliSession
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+BASE_DIR = Path(platformdirs.user_cache_dir("authrx"))
+TOKEN_PATH = BASE_DIR / "token.json"
+
 
 class AuthentricsCallback(TrainerCallback):
     def __init__(self, project_name: str, save_stats_local: bool, *features):
         # check if we are logged in and already have a token
-        self.token_file_path = CliSession.TOKEN_PATH
         self.session = self._check_authorization()
         self.project_name = project_name
         self.save_stats_local = save_stats_local
@@ -127,8 +129,8 @@ class AuthentricsCallback(TrainerCallback):
             tar.add(directory, arcname=directory.name)
 
     def _check_authorization(self) -> AuthentricsClient:
-        if self.token_file_path.exists():
-            with self.token_file_path.open("r", encoding="utf-8") as file:
+        if TOKEN_PATH.exists():
+            with TOKEN_PATH.open("r", encoding="utf-8") as file:
                 data = json.load(file)
                 if "token" not in data or "url" not in data:
                     logging.error("Invalid token file, Please login again")

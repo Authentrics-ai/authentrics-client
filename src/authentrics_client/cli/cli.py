@@ -4,54 +4,47 @@ import time
 from pathlib import Path
 
 import click
+import platformdirs
 import requests
 
+BASE_DIR = Path(platformdirs.user_cache_dir("authrx"))
+TOKEN_PATH = BASE_DIR / "token.json"
 
-class CliSession:
-    BASE_DIR = Path.home() / ".authrx"
-    TOKEN_PATH = BASE_DIR / "token.json"
 
-    def __init__(self, base_url: str, username: str, password: str) -> None:
-        self.username = username
-        self.password = password
+def parse_url(url: str) -> str:
+    parsed_url = requests.models.parse_url(url)
+    assert parsed_url.path is None or parsed_url.path == "/"
+    assert parsed_url.query is None
+    assert parsed_url.fragment is None
+    return parsed_url.url.rstrip("/")
 
-        parsed_url = requests.models.parse_url(base_url)
-        assert parsed_url.path is None or parsed_url.path == "/"
-        assert parsed_url.query is None
-        assert parsed_url.fragment is None
 
-        self.base_url = parsed_url.url.rstrip("/")
-        self._session = requests.Session()
-        self.token = self._login()
-        self._store_token(self.token, self.base_url)
-        os.environ["authrx_token"] = str(self.TOKEN_PATH)
+def post_login(base_url: str, username: str, password: str) -> str:
+    response = requests.post(
+        base_url + "/api/auth/login",
+        json={"username": username, "password": password},
+    )
+    response.raise_for_status()
+    return response.content.decode()
 
-    def _login(self) -> str:
-        return self._post(
-            "/api/auth/login",
-            json={"username": self.username, "password": self.password},
-        ).content.decode()
 
-    def _post(self, route: str, **kwargs):
-        response = self._session.post(self.base_url + route, **kwargs)
-        response.raise_for_status()
-        return response
+def store_token(token: str, url: str):
+    """Stores a token securely in ~/.cache/authrx/token.json."""
+    # Ensure the directory exists
+    BASE_DIR.mkdir(parents=True, exist_ok=True)
 
-    def _store_token(self, token: str, url: str):
-        """Stores a token securely in ~/.authrx/token.json."""
-        # Ensure the directory exists
-        self.BASE_DIR.mkdir(parents=True, exist_ok=True)
+    # Store the token in a JSON file
+    with TOKEN_PATH.open("w") as f:  # Open Path directly
+        json.dump({"token": token, "url": url, "COD": str(time.time_ns())}, f)
 
-        # Store the token in a JSON file
-        with self.TOKEN_PATH.open("w") as f:  # Open Path directly
-            json.dump({"token": token, "url": url, "COD": str(time.time_ns())}, f)
+    # Set file permissions to be readable only by the user
+    TOKEN_PATH.chmod(0o600)
 
-        # Set file permissions to be readable only by the user
-        self.TOKEN_PATH.chmod(0o600)
+    os.environ["authrx_token"] = str(TOKEN_PATH)
 
 
 @click.command()
-@click.option("--env", default="dev")
+@click.argument("url", type=str)
 @click.option("--username", prompt="Enter username", help="Your username")
 @click.option(
     "--password",
@@ -60,25 +53,14 @@ class CliSession:
     confirmation_prompt=True,
     help="Your password",
 )
-def login(env, username, password):
-    environments = {
-        "dev": "http://api.dev.authentrics.ai/",
-        "uat": "http://api.uat.authentrics.ai/",
-        "prod": "http://api.authentrics.ai/",
-    }
-
+def login(url, username, password):
     """Simple CLI to take a username and password securely."""
     click.echo(f"Username: {username}")
     click.echo("Password received securely!")
 
-    if env in environments:
-        url = environments[env]
-        click.echo("login using env: " + env)
-    else:
-        click.echo("Provided env not found")
-        raise ValueError
-
-    CliSession(url, username, password)
+    base_url = parse_url(url)
+    token = post_login(base_url, username, password)
+    store_token(token, base_url)
 
 
 @click.group()
