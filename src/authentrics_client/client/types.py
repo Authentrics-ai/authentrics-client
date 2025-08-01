@@ -90,5 +90,5 @@ class FileType(Enum):
 
     ONNX = "onnx"
     KERAS = "keras"
-    HF_TEXT = "hf_text_generation"
+    HF_TEXT = "hugging_face_gpt2_torch"
     HF_IT2T = "hf_image_text_to_text"
