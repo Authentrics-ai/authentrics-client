@@ -198,7 +198,7 @@ class DynamicHandler(BaseHandler):
         project_id: str,
         checkpoint_id: str,
         stimulus_path: str | Path,
-        amplitude: float,
+        amplitude: str,
     ) -> dict:
         """Run a sensitivity analysis for a single stimulus file.
 
@@ -232,7 +232,7 @@ class DynamicHandler(BaseHandler):
         project_id: str,
         checkpoint_id: str,
         stimulus_paths: list[str],
-        amplitude: float,
+        amplitude: str,
         *,
         batch_size: int = 1,
     ) -> dict:
