@@ -101,7 +101,7 @@ class CheckpointHandler(BaseHandler):
             "fileId": checkpoint_id,
         }
         if checkpoint_name is not None:
-            data["name"] = checkpoint_name
+            data["fileName"] = checkpoint_name
         if tag is not None:
             data["tag"] = tag
         return self.patch(
