@@ -22,6 +22,7 @@ class StaticHandler(BaseHandler):
         comparison: Comparison | str = Comparison.PREVIOUS,
         weight_names: list[str] | None = None,
         bias_names: list[str] | None = None,
+        **kwargs,
     ) -> dict:
         """Run static analysis on a checkpoint.
 
@@ -49,6 +50,7 @@ class StaticHandler(BaseHandler):
             data["weightNames"] = weight_names
         if bias_names is not None:
             data["biasNames"] = bias_names
+        data.update(kwargs)
 
         return self.post(
             "/static_analysis",
@@ -62,6 +64,7 @@ class StaticHandler(BaseHandler):
         new_checkpoint_path: str | Path,
         *,
         overwrite: bool = False,
+        **kwargs,
     ):
         """Edit the latest checkpoint to exclude the selected checkpoints.
 
@@ -76,15 +79,18 @@ class StaticHandler(BaseHandler):
         if new_checkpoint_path.exists() and not overwrite:
             raise FileExistsError(f"File {new_checkpoint_path} already exists")
 
+        data = {
+            "projectId": project_id,
+            "fileId": checkpoints_to_exclude,
+        }
+        data.update(kwargs)
+
         new_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(new_checkpoint_path, "wb") as f:
             response = self.post(
                 "/edit",
-                json={
-                    "projectId": project_id,
-                    "fileId": checkpoints_to_exclude,
-                },
+                json=data,
                 stream=True,
             )
             for chunk in response.iter_content(chunk_size=8192):
@@ -99,6 +105,7 @@ class StaticHandler(BaseHandler):
         new_checkpoint_path: str | Path,
         *,
         overwrite: bool = False,
+        **kwargs,
     ) -> None:
         """Edit the latest checkpoint to vary the influence of the selected checkpoints.
 
@@ -119,6 +126,13 @@ class StaticHandler(BaseHandler):
         if len(checkpoints_to_tune) != len(amplitudes):
             raise ValueError("checkpoints_to_tune and amplitudes must be the same length")
 
+        data = {
+            "projectId": project_id,
+            "fileId": checkpoints_to_tune,
+            "parameterList": amplitudes,
+        }
+        data.update(kwargs)
+
         new_checkpoint_path = Path(new_checkpoint_path)
         if new_checkpoint_path.exists() and not overwrite:
             raise FileExistsError(f"File {new_checkpoint_path} already exists")
@@ -128,11 +142,7 @@ class StaticHandler(BaseHandler):
         with open(new_checkpoint_path, "wb") as f:
             response = self.post(
                 "/metatune",
-                json={
-                    "projectId": project_id,
-                    "fileId": checkpoints_to_tune,
-                    "parameterList": amplitudes,
-                },
+                json=data,
                 stream=True,
             )
             for chunk in response.iter_content(chunk_size=8192):

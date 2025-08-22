@@ -30,7 +30,7 @@ class ProjectHandler(BaseHandler):
         return None
 
     def create_project(
-        self, name: str, description: str, model_format: str | FileType
+        self, name: str, description: str, model_format: str | FileType, **kwargs
     ) -> dict:
         """Create a project."""
         return self.post(
@@ -39,6 +39,7 @@ class ProjectHandler(BaseHandler):
                 "name": name,
                 "description": description,
                 "format": FileType(model_format).value,
+                **kwargs,
             },
         ).json()
 
@@ -53,6 +54,7 @@ class ProjectHandler(BaseHandler):
         name: str | None = None,
         description: str | None = None,
         model_format: str | FileType | None = None,
+        **kwargs,
     ) -> dict:
         """Update a project."""
         data = {}
@@ -62,6 +64,8 @@ class ProjectHandler(BaseHandler):
             data["description"] = description
         if model_format is not None:
             data["format"] = FileType(model_format).value
+        data.update(kwargs)
+
         return self.patch(
             "/project",
             json={"projectId": project_id, **data},
@@ -71,15 +75,18 @@ class ProjectHandler(BaseHandler):
         self,
         project_id: str,
         file_path: str | Path,
+        **kwargs,
     ) -> dict:
         """Create a classification file."""
         file_path = Path(file_path)
         if not file_path.is_file():
             raise FileNotFoundError(f"File {file_path} not found")
+        data = {"projectId": project_id}
+        data.update(kwargs)
 
         return self.post(
             "/project/classification_file",
-            files=generate_multipart_json(file_path, projectId=project_id),
+            files=generate_multipart_json(file_path, **data),
         ).json()
 
     def delete_classification_file(self, project_id: str) -> dict:
@@ -93,9 +100,13 @@ class ProjectHandler(BaseHandler):
         self,
         project_id: str,
         file_path: str | Path,
+        **kwargs,
     ) -> dict:
         """Update a classification file."""
+        data = {"projectId": project_id}
+        data.update(kwargs)
+
         return self.put(
             "/project/classification_file",
-            files=generate_multipart_json(file_path, projectId=project_id),
+            files=generate_multipart_json(file_path, **data),
         ).json()
