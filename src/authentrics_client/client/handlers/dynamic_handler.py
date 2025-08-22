@@ -20,6 +20,7 @@ class DynamicHandler(BaseHandler):
         stimulus_path: str | Path,
         *,
         layer_names: list[str] | None = None,
+        **kwargs,
     ) -> dict:
         """Run a comparative analysis for a single stimulus file.
 
@@ -46,6 +47,7 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        data.update(kwargs)
 
         return self.post(
             "/dynamic_analysis/comparative",
@@ -60,6 +62,7 @@ class DynamicHandler(BaseHandler):
         *,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
+        **kwargs,
     ) -> dict:
         """Get the dynamic analysis for multiple external stimulus files.
 
@@ -83,6 +86,7 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        data.update(kwargs)
 
         return self.post("/dynamic_analysis/comparative/batch", json=data).json()
 
@@ -94,6 +98,7 @@ class DynamicHandler(BaseHandler):
         *,
         comparison: Comparison | str = Comparison.PREVIOUS,
         layer_names: list[str] | None = None,
+        **kwargs,
     ) -> dict:
         """Run a contribution analysis for a single stimulus file.
 
@@ -116,6 +121,7 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        data.update(kwargs)
 
         return self.post(
             "/dynamic_analysis/contribution",
@@ -131,6 +137,7 @@ class DynamicHandler(BaseHandler):
         comparison: Comparison | str = Comparison.PREVIOUS,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
+        **kwargs,
     ) -> dict:
         """Run a contribution analysis for multiple external stimulus files.
 
@@ -156,6 +163,7 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        data.update(kwargs)
 
         return self.post(
             "/dynamic_analysis/contribution/batch",
@@ -170,6 +178,7 @@ class DynamicHandler(BaseHandler):
         *,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
+        **kwargs,
     ) -> dict:
         """Run a correlation analysis for multiple external stimulus files.
 
@@ -190,6 +199,7 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        data.update(kwargs)
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
 
@@ -199,6 +209,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_path: str | Path,
         amplitude: float,
+        **kwargs,
     ) -> dict:
         """Run a sensitivity analysis for a single stimulus file.
 
@@ -221,6 +232,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "parameter": amplitude,
         }
+        data.update(kwargs)
 
         return self.post(
             "/dynamic_analysis/sensitivity",
@@ -235,6 +247,7 @@ class DynamicHandler(BaseHandler):
         amplitude: float,
         *,
         batch_size: int = 1,
+        **kwargs,
     ) -> dict:
         """Run a sensitivity analysis for multiple external stimulus files.
 
@@ -256,6 +269,7 @@ class DynamicHandler(BaseHandler):
             "batchSize": batch_size,
             "parameter": amplitude,
         }
+        data.update(kwargs)
 
         return self.post(
             "/dynamic_analysis/sensitivity/batch",

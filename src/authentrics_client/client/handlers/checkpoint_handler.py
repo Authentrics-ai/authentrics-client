@@ -17,6 +17,7 @@ class CheckpointHandler(BaseHandler):
         *,
         checkpoint_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Upload a checkpoint.
 
@@ -48,6 +49,7 @@ class CheckpointHandler(BaseHandler):
             "projectId": project_id,
             "format": FileType(model_format).value,
         }
+        data.update(kwargs)
         if checkpoint_name is not None:
             data["name"] = checkpoint_name
         if tag is not None:
@@ -81,6 +83,7 @@ class CheckpointHandler(BaseHandler):
         file_path: str | Path | None = None,
         checkpoint_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Update a checkpoint.
 
@@ -104,6 +107,7 @@ class CheckpointHandler(BaseHandler):
             data["name"] = checkpoint_name
         if tag is not None:
             data["tag"] = tag
+        data.update(kwargs)
         return self.patch(
             "/project/file",
             files=generate_multipart_json(file_path, **data),
@@ -117,6 +121,7 @@ class CheckpointHandler(BaseHandler):
         *,
         file_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Add an external checkpoint to a project, saved in the same bucket as the
         project.
@@ -139,6 +144,7 @@ class CheckpointHandler(BaseHandler):
             "format": FileType(model_format).value,
             "fileName": file_name or file_path.rsplit("/", 1)[-1],
         }
+        data.update(kwargs)
         if tag is not None:
             data["tag"] = tag
 
@@ -156,6 +162,7 @@ class CheckpointHandler(BaseHandler):
         file_path: str | Path | None = None,
         file_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Update an external checkpoint."""
         data = {
@@ -171,20 +178,20 @@ class CheckpointHandler(BaseHandler):
             data["fileName"] = file_name
         if tag is not None:
             data["tag"] = tag
+        data.update(kwargs)
 
         return self.patch(
             "/project/file/external",
             json=data,
         ).json()
 
-    def trigger_file_event(self, project_id: str, checkpoint_id: str) -> None:
+    def trigger_file_event(self, project_id: str, checkpoint_id: str, **kwargs) -> None:
         """Trigger the calculation of the summary scores and validation of a checkpoint.
 
         Args:
             project_id: The ID of the project to trigger the file event for.
             checkpoint_id: The ID of the checkpoint to trigger the file event for.
         """
-        self.post(
-            "/project/file_event",
-            json={"projectId": project_id, "fileId": checkpoint_id},
-        )
+        data = {"projectId": project_id, "fileId": checkpoint_id}
+        data.update(kwargs)
+        self.post("/project/file_event", json=data)

@@ -20,6 +20,7 @@ class AdminHandler(BaseHandler):
         password: str,
         first_name: str,
         last_name: str,
+        **kwargs,
     ) -> dict:
         """Create a new admin user."""
         return self.post(
@@ -30,6 +31,7 @@ class AdminHandler(BaseHandler):
                 "password": password,
                 "first_name": first_name,
                 "last_name": last_name,
+                **kwargs,
             },
         ).json()
 
@@ -38,7 +40,13 @@ class AdminHandler(BaseHandler):
         return self.get("/api/auth/admin/user").json()
 
     def create_new_user(
-        self, username: str, email: str, password: str, first_name: str, last_name: str
+        self,
+        username: str,
+        email: str,
+        password: str,
+        first_name: str,
+        last_name: str,
+        **kwargs,
     ) -> dict:
         """Create a new user."""
         return self.post(
@@ -49,6 +57,7 @@ class AdminHandler(BaseHandler):
                 "password": password,
                 "first_name": first_name,
                 "last_name": last_name,
+                **kwargs,
             },
         ).json()
 
@@ -64,6 +73,7 @@ class AdminHandler(BaseHandler):
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
+        **kwargs,
     ) -> dict:
         """Update a user."""
         data = {}
@@ -73,6 +83,7 @@ class AdminHandler(BaseHandler):
             data["roles"] = roles
         if enabled is not None:
             data["enabled"] = enabled
+        data.update(kwargs)
         return self.patch(f"/api/auth/admin/{user_id}", json=data).json()
 
     def delete_user(self, user_id: str, email: str) -> dict:
@@ -87,6 +98,7 @@ class AdminHandler(BaseHandler):
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
+        **kwargs,
     ) -> dict:
         """Update a user."""
         data = {}
@@ -96,6 +108,7 @@ class AdminHandler(BaseHandler):
             data["roles"] = roles
         if enabled is not None:
             data["enabled"] = enabled
+        data.update(kwargs)
         return self.patch(f"/api/auth/admin/user/{user_id}", json=data).json()
 
     def get_user_by_email(self, email: str) -> dict | None:

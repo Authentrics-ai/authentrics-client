@@ -17,6 +17,7 @@ class UserHandler(BaseHandler):
         first_name: str | None = None,
         last_name: str | None = None,
         password: str | None = None,
+        **kwargs,
     ) -> None:
         """Update the current user."""
         data = {}
@@ -30,6 +31,7 @@ class UserHandler(BaseHandler):
             data["lastName"] = last_name
         if password is not None:
             data["password"] = password
+        data.update(kwargs)
 
         self.patch(
             "/api/auth/user",
