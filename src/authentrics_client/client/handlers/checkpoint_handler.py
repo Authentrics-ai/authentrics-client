@@ -58,20 +58,29 @@ class CheckpointHandler(BaseHandler):
             files=generate_multipart_json(file_path, **data),
         ).json()
 
-    def delete_checkpoint(self, project_id: str, checkpoint_id: str) -> dict:
+    def delete_checkpoint(
+        self,
+        project_id: str,
+        checkpoint_id: str,
+        *,
+        hard_delete: bool | None = None,
+    ) -> dict:
         """Delete a checkpoint.
 
         Args:
             project_id: The ID of the project to delete the checkpoint from.
             checkpoint_id: The ID of the checkpoint to delete.
+            hard_delete (Optional): Whether to hard delete the checkpoint. If not
+            provided, the checkpoint will be soft deleted.
 
         Returns:
             The project without the deleted checkpoint.
         """
-        return self.delete(
-            "/project/file",
-            json={"projectId": project_id, "fileId": checkpoint_id},
-        ).json()
+        data = {"projectId": project_id, "fileId": checkpoint_id}
+        if hard_delete is not None:
+            data["hardDelete"] = bool(hard_delete)
+
+        return self.delete("/project/file", json=data).json()
 
     def update_checkpoint(
         self,
