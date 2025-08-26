@@ -6,6 +6,7 @@ from .handlers import (
     AuthenticationHandler,
     CheckpointHandler,
     DynamicHandler,
+    MembershipHandler,
     ProjectHandler,
     StaticHandler,
     UserHandler,
@@ -37,6 +38,7 @@ class AuthentricsClient(BaseClient):
         self._auth = AuthenticationHandler(self)
         self._checkpoint = CheckpointHandler(self)
         self._dynamic = DynamicHandler(self)
+        self._membership = MembershipHandler(self)
         self._project = ProjectHandler(self)
         self._static = StaticHandler(self)
         self._user = UserHandler(self)
