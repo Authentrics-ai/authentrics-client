@@ -18,9 +18,10 @@ __all__ = ["AuthentricsClient"]
 class AuthentricsClient(BaseClient):
     """A client for interacting with the Authentrics API.
 
-    For requests involving file uploads, use the `Multipart` class as the argument to
-    the `files` keyword argument. For all other requests, use the `json` keyword
-    argument.
+    For requests involving file uploads, use the
+    :func:`authentrics_client.generate_multipart_json`
+    function as the argument to the `files` keyword argument. For all other requests,
+    use the `json` keyword argument.
     """
 
     def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
