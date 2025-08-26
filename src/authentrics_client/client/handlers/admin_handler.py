@@ -9,8 +9,8 @@ class AdminHandler(BaseHandler):
     To access this API, you need to be logged in as an admin user.
     """
 
-    def get_admin_info(self) -> dict:
-        """Get the info of the current admin user."""
+    def get_all_admins(self) -> list[dict]:
+        """Get the info of all admins."""
         return self.get("/api/auth/admin").json()
 
     def create_admin_user(
@@ -61,6 +61,7 @@ class AdminHandler(BaseHandler):
     def update_admin(
         self,
         user_id: str,
+        *,
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
@@ -84,6 +85,7 @@ class AdminHandler(BaseHandler):
     def update_user(
         self,
         user_id: str,
+        *,
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
