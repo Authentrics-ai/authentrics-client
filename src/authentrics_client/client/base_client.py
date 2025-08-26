@@ -43,7 +43,19 @@ class BaseClient:
             self._session.proxies = {"http": proxy_url, "https": proxy_url}
 
     def _request(self, request_method: MethodType, route: str, **kwargs):
-        """A helper method for making requests to the API server."""
+        """Make a request to the API using the pre-initialized session.
+
+        Args:
+            request_method: The HTTP method to use
+            route: The API route to request
+            **kwargs: Additional arguments to pass to requests
+
+        Returns:
+            The response from the API
+
+        Raises:
+            requests.exceptions.HTTPError: If the request fails
+        """
         response = self._session.request(
             request_method.value, self.base_url + route, **kwargs
         )
