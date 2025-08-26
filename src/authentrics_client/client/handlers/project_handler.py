@@ -42,9 +42,13 @@ class ProjectHandler(BaseHandler):
             },
         ).json()
 
-    def delete_project(self, *project_ids: str) -> None:
+    def delete_project(self, *project_ids: str, hard_delete: bool | None = None) -> None:
         """Delete one or more projects."""
-        self.delete("/project", json=list(project_ids))
+        data = {"projectIds": list(project_ids)}
+        if hard_delete is not None:
+            data["hardDelete"] = bool(hard_delete)
+
+        self.delete("/project", json=data)
 
     def update_project(
         self,
