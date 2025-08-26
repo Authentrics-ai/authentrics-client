@@ -7,7 +7,7 @@ __all__ = ["ProjectHandler"]
 
 
 class ProjectHandler(BaseHandler):
-    """A handler for interacting with the Authentrics API."""
+    """A handler for interacting with the Authentrics API project endpoints."""
 
     def get_projects(self) -> list[dict]:
         """Get all projects."""
