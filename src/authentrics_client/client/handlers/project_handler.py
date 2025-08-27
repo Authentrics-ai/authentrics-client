@@ -86,6 +86,7 @@ class ProjectHandler(BaseHandler):
         """Delete a classification file."""
         return self.delete(
             "/project/classification_file",
+            json={"projectId": project_id},
         ).json()
 
     def update_classification_file(
