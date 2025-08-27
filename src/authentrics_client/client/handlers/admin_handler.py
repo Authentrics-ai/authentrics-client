@@ -13,7 +13,7 @@ class AdminHandler(BaseHandler):
         """Get the info of all admins."""
         return self.get("/api/auth/admin").json()
 
-    def create_admin_user(
+    def create_admin(
         self,
         username: str,
         email: str,
@@ -37,7 +37,7 @@ class AdminHandler(BaseHandler):
         """Get all users."""
         return self.get("/api/auth/admin/user").json()
 
-    def create_new_user(
+    def create_user(
         self, username: str, email: str, password: str, first_name: str, last_name: str
     ) -> dict:
         """Create a new user."""

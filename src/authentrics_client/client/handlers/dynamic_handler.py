@@ -13,7 +13,7 @@ class DynamicHandler(BaseHandler):
     Dynamic analysis is any analysis that is performed during a model inference.
     """
 
-    def single_comparative_analysis(
+    def comparative_analysis(
         self,
         project_id: str,
         checkpoint_id: str,
@@ -86,7 +86,7 @@ class DynamicHandler(BaseHandler):
 
         return self.post("/dynamic_analysis/comparative/batch", json=data).json()
 
-    def single_contribution_analysis(
+    def contribution_analysis(
         self,
         project_id: str,
         checkpoint_id: str,
@@ -162,7 +162,7 @@ class DynamicHandler(BaseHandler):
             json=data,
         ).json()
 
-    def correlation_analysis(
+    def batch_correlation_analysis(
         self,
         project_id: str,
         checkpoint_id: str,
@@ -193,7 +193,7 @@ class DynamicHandler(BaseHandler):
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
 
-    def single_sensitivity_analysis(
+    def sensitivity_analysis(
         self,
         project_id: str,
         checkpoint_id: str,

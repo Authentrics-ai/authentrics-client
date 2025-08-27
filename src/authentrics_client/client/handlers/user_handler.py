@@ -31,7 +31,4 @@ class UserHandler(BaseHandler):
         if password is not None:
             data["password"] = password
 
-        self.patch(
-            "/api/auth/user",
-            json=data,
-        )
+        self.patch("/api/auth/user", json=data)

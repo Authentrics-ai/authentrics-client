@@ -9,7 +9,7 @@ __all__ = ["CheckpointHandler"]
 class CheckpointHandler(BaseHandler):
     """A handler for interacting with model checkpoints in the Authentrics API."""
 
-    def upload_checkpoint(
+    def add_checkpoint(
         self,
         project_id: str,
         file_path: str | Path,
