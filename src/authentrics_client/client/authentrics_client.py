@@ -67,6 +67,11 @@ class AuthentricsClient(BaseClient):
         return self._dynamic
 
     @property
+    def membership(self) -> MembershipHandler:
+        """Handles membership-related operations."""
+        return self._membership
+
+    @property
     def project(self) -> ProjectHandler:
         """Handles project-related operations."""
         return self._project
