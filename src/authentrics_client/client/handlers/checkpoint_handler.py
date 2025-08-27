@@ -69,11 +69,11 @@ class CheckpointHandler(BaseHandler):
         overwrite: bool = True,
         **kwargs,
     ) -> dict:
-        """Get a checkpoint.
+        """Download a checkpoint.
 
         Args:
             project_id: The ID of the project to get the checkpoint from.
-            checkpoint_id: The ID of the checkpoint to get.
+            checkpoint_id: The ID of the checkpoint to download.
             new_checkpoint_path: The path to save the checkpoint to.
             overwrite: Whether to overwrite the checkpoint if it already exists.
             If False, an error will be raised if the checkpoint already exists.
@@ -86,9 +86,42 @@ class CheckpointHandler(BaseHandler):
         new_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(new_checkpoint_path, "wb") as f:
-            response = self.post(
+            response = self.get(
                 f"/project/file/{checkpoint_id}",
-                json={"projectId": project_id},
+                params={"projectId": project_id},
+                stream=True,
+            )
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    def get_all_checkpoints(
+        self,
+        project_id: str,
+        zip_file_path: str | Path,
+        *,
+        overwrite: bool = True,
+        **kwargs,
+    ) -> dict:
+        """Download all checkpoints into a zip file.
+
+        Args:
+            project_id: The ID of the project to get the checkpoint from.
+            zip_file_path: The path to save the zip file to.
+            overwrite: Whether to overwrite the checkpoint if it already exists.
+            If False, an error will be raised if the checkpoint already exists.
+        """
+
+        zip_file_path = Path(zip_file_path)
+        if zip_file_path.exists() and not overwrite:
+            raise FileExistsError(f"File {zip_file_path} already exists")
+
+        zip_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(zip_file_path, "wb") as f:
+            response = self.get(
+                "/project/file",
+                params={"projectId": project_id},
                 stream=True,
             )
             for chunk in response.iter_content(chunk_size=8192):
