@@ -137,6 +137,7 @@ class DynamicHandler(BaseHandler):
         comparison: Comparison | str = Comparison.PREVIOUS,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
+        unchanged_activation_threshold: float = 0.0,
         **kwargs,
     ) -> dict:
         """Run a contribution analysis for multiple external stimulus files.
@@ -150,7 +151,8 @@ class DynamicHandler(BaseHandler):
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
             batch_size: Number of files to process in each batch. Defaults to 1.
-
+            unchanged_activation_threshold: The threshold for considering a layer
+            unchanged. Default is 0.0.
         Returns:
             dict: The analysis results.
         """
@@ -160,6 +162,7 @@ class DynamicHandler(BaseHandler):
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
             "comparisonType": Comparison(comparison).value,
+            "unchangedActivationThreshold": str(unchanged_activation_threshold),
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
@@ -230,7 +233,7 @@ class DynamicHandler(BaseHandler):
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "parameter": amplitude,
+            "parameter": str(amplitude),
         }
         data.update(kwargs)
 
@@ -267,7 +270,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
-            "parameter": amplitude,
+            "parameter": str(amplitude),
         }
         data.update(kwargs)
 
