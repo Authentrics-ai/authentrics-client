@@ -61,7 +61,7 @@ class CheckpointHandler(BaseHandler):
             files=generate_multipart_json(file_path, **data),
         ).json()
 
-    def get_checkpoint(
+    def download_checkpoint(
         self,
         project_id: str,
         checkpoint_id: str,
@@ -101,7 +101,7 @@ class CheckpointHandler(BaseHandler):
                 if chunk:
                     f.write(chunk)
 
-    def get_all_checkpoints(
+    def download_all_checkpoints(
         self,
         project_id: str,
         zip_file_path: str | Path,
