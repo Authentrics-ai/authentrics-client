@@ -166,6 +166,7 @@ class CheckpointHandler(BaseHandler):
         checkpoint_id: str,
         *,
         file_path: str | Path | None = None,
+        model_format: str | FileType | None = None,
         checkpoint_name: str | None = None,
         tag: str | None = None,
         **kwargs,
@@ -177,6 +178,8 @@ class CheckpointHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to update.
             file_path (Optional): The path to the checkpoint file. If None, only the
             metadata of the checkpoint is updated.
+            model_format (Optional): The format of the checkpoint file (must match the
+            project's model format).
             checkpoint_name (Optional): The display name of the checkpoint.
             tag (Optional): The tag of the checkpoint, for identifying the checkpoint
             with the data it was trained on.
@@ -184,6 +187,12 @@ class CheckpointHandler(BaseHandler):
         Returns:
             The project with the updated checkpoint.
         """
+        if file_path is not None:
+            if model_format is None:
+                raise ValueError("model_format is required if file_path is provided")
+            if checkpoint_name is None:
+                raise ValueError("checkpoint_name is required if file_path is provided")
+
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -192,7 +201,10 @@ class CheckpointHandler(BaseHandler):
             data["fileName"] = checkpoint_name
         if tag is not None:
             data["tag"] = tag
+        if model_format is not None:
+            data["format"] = FileType(model_format).value
         data.update(kwargs)
+
         return self.patch(
             "/project/file",
             files=generate_multipart_json(file_path, **data),
