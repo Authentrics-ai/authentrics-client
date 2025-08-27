@@ -145,20 +145,20 @@ class CheckpointHandler(BaseHandler):
         checkpoint_id: str,
         *,
         hard_delete: bool | None = None,
-    ) -> dict:
+    ) -> None:
         """Delete a checkpoint.
 
         Args:
             project_id: The ID of the project to delete the checkpoint from.
             checkpoint_id: The ID of the checkpoint to delete.
-
-        Returns:
-            The project without the deleted checkpoint.
+            hard_delete (Optional): Whether to hard delete the checkpoint. If not
+            provided, the checkpoint will be soft deleted.
         """
-        return self.delete(
-            "/project/file",
-            json={"projectId": project_id, "fileId": checkpoint_id},
-        ).json()
+        data = {"projectId": project_id, "fileId": checkpoint_id}
+        if hard_delete is not None:
+            data["hardDelete"] = bool(hard_delete)
+
+        self.delete("/project/file", json=data)
 
     def update_checkpoint(
         self,
