@@ -66,7 +66,7 @@ class CheckpointHandler(BaseHandler):
         checkpoint_id: str,
         new_checkpoint_path: str | Path,
         *,
-        overwrite: bool = False,
+        overwrite: bool = True,
         **kwargs,
     ) -> dict:
         """Get a checkpoint.
