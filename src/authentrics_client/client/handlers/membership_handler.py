@@ -16,7 +16,7 @@ class MembershipHandler(BaseHandler):
         """Add a user to a project."""
         return self.post(
             f"/project/{project_id}/user",
-            json={"email": email, "permissions": permissions, **kwargs},
+            json={"emailAddress": email, "permissions": permissions, **kwargs},
         ).json()
 
     def delete_user_from_project(self, project_id: str, user_id: str) -> None:
