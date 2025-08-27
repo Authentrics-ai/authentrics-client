@@ -60,7 +60,48 @@ class CheckpointHandler(BaseHandler):
             files=generate_multipart_json(file_path, **data),
         ).json()
 
-    def delete_checkpoint(self, project_id: str, checkpoint_id: str) -> dict:
+    def get_checkpoint(
+        self,
+        project_id: str,
+        checkpoint_id: str,
+        new_checkpoint_path: str | Path,
+        *,
+        overwrite: bool = False,
+        **kwargs,
+    ) -> dict:
+        """Get a checkpoint.
+
+        Args:
+            project_id: The ID of the project to get the checkpoint from.
+            checkpoint_id: The ID of the checkpoint to get.
+            new_checkpoint_path: The path to save the checkpoint to.
+            overwrite: Whether to overwrite the checkpoint if it already exists.
+            If False, an error will be raised if the checkpoint already exists.
+        """
+
+        new_checkpoint_path = Path(new_checkpoint_path)
+        if new_checkpoint_path.exists() and not overwrite:
+            raise FileExistsError(f"File {new_checkpoint_path} already exists")
+
+        new_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(new_checkpoint_path, "wb") as f:
+            response = self.post(
+                f"/project/file/{checkpoint_id}",
+                json={"projectId": project_id},
+                stream=True,
+            )
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    def delete_checkpoint(
+        self,
+        project_id: str,
+        checkpoint_id: str,
+        *,
+        hard_delete: bool | None = None,
+    ) -> dict:
         """Delete a checkpoint.
 
         Args:
