@@ -51,6 +51,7 @@ class AuthenticationHandler(BaseHandler):
 
     def register(
         self,
+        *,
         username: str,
         email: str,
         password: str,

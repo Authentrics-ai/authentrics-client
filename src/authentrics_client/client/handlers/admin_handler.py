@@ -9,11 +9,11 @@ class AdminHandler(BaseHandler):
     To access this API, you need to be logged in as an admin user.
     """
 
-    def get_admin_info(self) -> dict:
-        """Get the info of the current admin user."""
+    def get_all_admins(self) -> list[dict]:
+        """Get the info of all admins."""
         return self.get("/api/auth/admin").json()
 
-    def create_admin_user(
+    def create_admin(
         self,
         username: str,
         email: str,
@@ -21,25 +21,25 @@ class AdminHandler(BaseHandler):
         first_name: str,
         last_name: str,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Create a new admin user."""
-        return self.post(
+        self.post(
             "/api/auth/admin",
             json={
                 "username": username,
-                "email": email,
+                "emailAddress": email,
                 "password": password,
-                "first_name": first_name,
-                "last_name": last_name,
+                "firstName": first_name,
+                "lastName": last_name,
                 **kwargs,
             },
-        ).json()
+        )
 
     def get_all_users(self) -> list[dict]:
         """Get all users."""
         return self.get("/api/auth/admin/user").json()
 
-    def create_new_user(
+    def create_user(
         self,
         username: str,
         email: str,
@@ -47,34 +47,33 @@ class AdminHandler(BaseHandler):
         first_name: str,
         last_name: str,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Create a new user."""
-        return self.post(
+        self.post(
             "/api/auth/admin/user",
             json={
                 "username": username,
-                "email": email,
+                "emailAddress": email,
                 "password": password,
-                "first_name": first_name,
-                "last_name": last_name,
+                "firstName": first_name,
+                "lastName": last_name,
                 **kwargs,
             },
-        ).json()
+        )
 
-    def delete_admin(self, user_id: str, email: str) -> dict:
+    def delete_admin(self, user_id: str, email: str) -> None:
         """Delete a user."""
-        return self.delete(
-            f"/api/auth/admin/{user_id}", json={"emailAddress": email}
-        ).json()
+        self.delete(f"/api/auth/admin/{user_id}", json={"emailAddress": email})
 
     def update_admin(
         self,
         user_id: str,
+        *,
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Update a user."""
         data = {}
         if email is not None:
@@ -84,22 +83,21 @@ class AdminHandler(BaseHandler):
         if enabled is not None:
             data["enabled"] = enabled
         data.update(kwargs)
-        return self.patch(f"/api/auth/admin/{user_id}", json=data).json()
+        self.patch(f"/api/auth/admin/{user_id}", json=data)
 
-    def delete_user(self, user_id: str, email: str) -> dict:
+    def delete_user(self, user_id: str, email: str) -> None:
         """Delete a user."""
-        return self.delete(
-            f"/api/auth/admin/user/{user_id}", json={"emailAddress": email}
-        ).json()
+        self.delete(f"/api/auth/admin/user/{user_id}", json={"emailAddress": email})
 
     def update_user(
         self,
         user_id: str,
+        *,
         email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Update a user."""
         data = {}
         if email is not None:
@@ -109,7 +107,7 @@ class AdminHandler(BaseHandler):
         if enabled is not None:
             data["enabled"] = enabled
         data.update(kwargs)
-        return self.patch(f"/api/auth/admin/user/{user_id}", json=data).json()
+        self.patch(f"/api/auth/admin/user/{user_id}", json=data)
 
     def get_user_by_email(self, email: str) -> dict | None:
         """Get a user by email."""

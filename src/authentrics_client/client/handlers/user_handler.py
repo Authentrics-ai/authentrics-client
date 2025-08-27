@@ -12,6 +12,7 @@ class UserHandler(BaseHandler):
 
     def update_user(
         self,
+        *,
         username: str | None = None,
         email: str | None = None,
         first_name: str | None = None,
@@ -33,7 +34,4 @@ class UserHandler(BaseHandler):
             data["password"] = password
         data.update(kwargs)
 
-        self.patch(
-            "/api/auth/user",
-            json=data,
-        )
+        self.patch("/api/auth/user", json=data)

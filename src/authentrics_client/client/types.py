@@ -96,7 +96,11 @@ class FileType(Enum):
         HF_IT2T: Hugging Face checkpoint file for image text to text (e.g., Gemma)
     """
 
-    ONNX = "onnx"
-    KERAS = "keras"
-    HF_TEXT = "hf_text_generation"
-    HF_IT2T = "hf_image_text_to_text"
+    ONNX = "ONNX"
+    """ONNX file"""
+    KERAS = "KERAS"
+    """Keras file"""
+    HF_TEXT = "HF_TEXT_GENERATION"
+    """Hugging Face checkpoint file for text generation (e.g., Llama)"""
+    HF_IT2T = "HF_IMAGE_TEXT_TO_TEXT"
+    """Hugging Face checkpoint file for image text to text (e.g., Gemma)"""

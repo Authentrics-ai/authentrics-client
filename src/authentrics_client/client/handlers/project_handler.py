@@ -7,7 +7,7 @@ __all__ = ["ProjectHandler"]
 
 
 class ProjectHandler(BaseHandler):
-    """A handler for interacting with the Authentrics API."""
+    """A handler for interacting with the Authentrics API project endpoints."""
 
     def get_projects(self) -> list[dict]:
         """Get all projects."""
@@ -17,8 +17,8 @@ class ProjectHandler(BaseHandler):
         """Get a project by ID."""
         return self.get(f"/project/{project_id}").json()
 
-    def get_project_metadata(self, project_id: str) -> dict:
-        """Get the metadata for a project."""
+    def get_model_metadata(self, project_id: str) -> dict:
+        """Get the metadata for a project's model."""
         return self.get(f"/project/{project_id}/metadata").json()
 
     def get_project_by_name(self, name: str) -> dict | None:
@@ -97,6 +97,7 @@ class ProjectHandler(BaseHandler):
         """Delete a classification file."""
         return self.delete(
             "/project/classification_file",
+            json={"projectId": project_id},
         ).json()
 
     def update_classification_file(

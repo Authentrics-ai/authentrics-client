@@ -44,7 +44,7 @@ class StaticHandler(BaseHandler):
         data: dict[str, Any] = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "comparison": Comparison(comparison).value,
+            "comparisonType": Comparison(comparison).value,
         }
         if weight_names is not None:
             data["weightNames"] = weight_names
@@ -52,10 +52,7 @@ class StaticHandler(BaseHandler):
             data["biasNames"] = bias_names
         data.update(kwargs)
 
-        return self.post(
-            "/static_analysis",
-            json=data,
-        ).json()
+        return self.post("/static_analysis", json=data).json()
 
     def exclude(
         self,
