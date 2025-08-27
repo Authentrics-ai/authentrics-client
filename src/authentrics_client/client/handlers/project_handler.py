@@ -71,6 +71,10 @@ class ProjectHandler(BaseHandler):
             json={"projectId": project_id, **data},
         ).json()
 
+    def get_metadata(self, project_id: str) -> dict:
+        """Get the layer names, weight names, and bias names for a project."""
+        return self.get(f"/project/{project_id}/metadata").json()
+
     def create_classification_file(
         self,
         project_id: str,
