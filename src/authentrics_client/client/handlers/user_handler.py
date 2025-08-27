@@ -12,6 +12,7 @@ class UserHandler(BaseHandler):
 
     def update_user(
         self,
+        *,
         username: str | None = None,
         email: str | None = None,
         first_name: str | None = None,

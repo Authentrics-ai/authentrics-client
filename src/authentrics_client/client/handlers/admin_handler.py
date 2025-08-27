@@ -27,10 +27,10 @@ class AdminHandler(BaseHandler):
             "/api/auth/admin",
             json={
                 "username": username,
-                "email": email,
+                "emailAddress": email,
                 "password": password,
-                "first_name": first_name,
-                "last_name": last_name,
+                "firstName": first_name,
+                "lastName": last_name,
                 **kwargs,
             },
         )
@@ -53,10 +53,10 @@ class AdminHandler(BaseHandler):
             "/api/auth/admin/user",
             json={
                 "username": username,
-                "email": email,
+                "emailAddress": email,
                 "password": password,
-                "first_name": first_name,
-                "last_name": last_name,
+                "firstName": first_name,
+                "lastName": last_name,
                 **kwargs,
             },
         )
