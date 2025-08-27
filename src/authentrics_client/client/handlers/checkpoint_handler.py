@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 from ..types import FileType, generate_multipart_json
@@ -68,7 +69,7 @@ class CheckpointHandler(BaseHandler):
         *,
         overwrite: bool = True,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Download a checkpoint.
 
         Args:
@@ -91,6 +92,11 @@ class CheckpointHandler(BaseHandler):
                 params={"projectId": project_id},
                 stream=True,
             )
+            if response.headers.get("Content-Type") != "application/octet-stream":
+                warnings.warn(
+                    "The response is not an octet stream. An error may have occurred.",
+                    stacklevel=1,
+                )
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     f.write(chunk)
@@ -102,7 +108,7 @@ class CheckpointHandler(BaseHandler):
         *,
         overwrite: bool = True,
         **kwargs,
-    ) -> dict:
+    ) -> None:
         """Download all checkpoints into a zip file.
 
         Args:
@@ -124,6 +130,11 @@ class CheckpointHandler(BaseHandler):
                 params={"projectId": project_id},
                 stream=True,
             )
+            if response.headers.get("Content-Type") != "application/octet-stream":
+                warnings.warn(
+                    "The response is not an octet stream. An error may have occurred.",
+                    stacklevel=1,
+                )
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     f.write(chunk)
