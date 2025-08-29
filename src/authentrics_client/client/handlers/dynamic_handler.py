@@ -43,8 +43,8 @@ class DynamicHandler(BaseHandler):
             FileNotFoundError: If the stimulus file does not exist.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -91,8 +91,8 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -132,8 +132,8 @@ class DynamicHandler(BaseHandler):
             as a dictionary.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -185,8 +185,8 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -231,8 +231,8 @@ class DynamicHandler(BaseHandler):
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
         """
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -271,8 +271,8 @@ class DynamicHandler(BaseHandler):
         1.0 means the influence of the checkpoint is fully applied, and -1.0 means the
         influence of the checkpoint is fully removed (as in `StaticHandler.exclude()`).
         """
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         stimulus_path = Path(stimulus_path)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
@@ -317,8 +317,8 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, str):
-            inference_config = json.loads(inference_config)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
