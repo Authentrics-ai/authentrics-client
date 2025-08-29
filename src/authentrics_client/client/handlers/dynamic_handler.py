@@ -53,7 +53,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
         }
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         if layer_names is not None:
             data["layerNames"] = layer_names
         data.update(kwargs)
@@ -100,7 +100,7 @@ class DynamicHandler(BaseHandler):
             "batchSize": batch_size,
         }
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         if layer_names is not None:
             data["layerNames"] = layer_names
         data.update(kwargs)
@@ -145,7 +145,7 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -198,7 +198,7 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -242,7 +242,7 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         data.update(kwargs)
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
@@ -283,7 +283,7 @@ class DynamicHandler(BaseHandler):
             "parameter": str(amplitude),
         }
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -327,7 +327,7 @@ class DynamicHandler(BaseHandler):
             "parameter": str(amplitude),
         }
         if inference_config is not None:
-            data["inferenceConfig"] = inference_config
+            data["inferenceConfigJson"] = inference_config
         data.update(kwargs)
 
         return self.post(
