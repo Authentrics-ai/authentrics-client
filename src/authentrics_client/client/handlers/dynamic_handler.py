@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,7 @@ class DynamicHandler(BaseHandler):
         stimulus_path: str | Path,
         *,
         layer_names: list[str] | None = None,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a comparative analysis for a single stimulus file.
@@ -30,6 +32,9 @@ class DynamicHandler(BaseHandler):
             stimulus_path: Path to the local stimulus file to analyze.
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
 
         Returns:
             dict: The analysis results.
@@ -38,6 +43,8 @@ class DynamicHandler(BaseHandler):
             FileNotFoundError: If the stimulus file does not exist.
         """
         stimulus_path = Path(stimulus_path)
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -45,6 +52,8 @@ class DynamicHandler(BaseHandler):
             "projectId": project_id,
             "fileId": checkpoint_id,
         }
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         if layer_names is not None:
             data["layerNames"] = layer_names
         data.update(kwargs)
@@ -61,6 +70,7 @@ class DynamicHandler(BaseHandler):
         stimulus_paths: list[str],
         *,
         layer_names: list[str] | None = None,
+        inference_config: dict | str | None = None,
         batch_size: int = 1,
         **kwargs,
     ) -> dict:
@@ -73,17 +83,24 @@ class DynamicHandler(BaseHandler):
             layers.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
             in the same bucket as the checkpoint.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
             batch_size: Number of files to process in each batch. Defaults to 1.
 
         Returns:
             dict: The analysis results.
         """
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
         }
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         if layer_names is not None:
             data["layerNames"] = layer_names
         data.update(kwargs)
@@ -98,6 +115,7 @@ class DynamicHandler(BaseHandler):
         *,
         comparison: Comparison | str = Comparison.PREVIOUS,
         layer_names: list[str] | None = None,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a contribution analysis for a single stimulus file.
@@ -109,8 +127,13 @@ class DynamicHandler(BaseHandler):
             comparison: The type of comparison to perform.
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
         """
         stimulus_path = Path(stimulus_path)
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -121,6 +144,8 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -138,6 +163,7 @@ class DynamicHandler(BaseHandler):
         layer_names: list[str] | None = None,
         batch_size: int = 1,
         unchanged_activation_threshold: float = 0.0,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a contribution analysis for multiple external stimulus files.
@@ -153,9 +179,14 @@ class DynamicHandler(BaseHandler):
             batch_size: Number of files to process in each batch. Defaults to 1.
             unchanged_activation_threshold: The threshold for considering a layer
             unchanged. Default is 0.0.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
         Returns:
             dict: The analysis results.
         """
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -166,6 +197,8 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -181,6 +214,7 @@ class DynamicHandler(BaseHandler):
         *,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a correlation analysis for multiple external stimulus files.
@@ -193,7 +227,12 @@ class DynamicHandler(BaseHandler):
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
             batch_size: Number of files to process in each batch. Defaults to 1.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
         """
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -202,6 +241,8 @@ class DynamicHandler(BaseHandler):
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         data.update(kwargs)
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
@@ -212,6 +253,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_path: str | Path,
         amplitude: float,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a sensitivity analysis for a single stimulus file.
@@ -221,11 +263,16 @@ class DynamicHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_path: Path to the local stimulus file to analyze.
             amplitude: The amplitude of the change to the checkpoint.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
 
         Note: For the amplitude, 0.0 means the influence of the checkpoint is not changed,
         1.0 means the influence of the checkpoint is fully applied, and -1.0 means the
         influence of the checkpoint is fully removed (as in `StaticHandler.exclude()`).
         """
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         stimulus_path = Path(stimulus_path)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
@@ -235,6 +282,8 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "parameter": str(amplitude),
         }
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         data.update(kwargs)
 
         return self.post(
@@ -250,6 +299,7 @@ class DynamicHandler(BaseHandler):
         amplitude: float,
         *,
         batch_size: int = 1,
+        inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
         """Run a sensitivity analysis for multiple external stimulus files.
@@ -261,10 +311,14 @@ class DynamicHandler(BaseHandler):
             in the same bucket as the checkpoint.
             amplitude: The amplitude of the change to the checkpoint.
             batch_size: Number of files to process in each batch. Defaults to 1.
-
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
         Returns:
             dict: The analysis results.
         """
+        if isinstance(inference_config, str):
+            inference_config = json.loads(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -272,6 +326,8 @@ class DynamicHandler(BaseHandler):
             "batchSize": batch_size,
             "parameter": str(amplitude),
         }
+        if inference_config is not None:
+            data["inferenceConfig"] = inference_config
         data.update(kwargs)
 
         return self.post(
