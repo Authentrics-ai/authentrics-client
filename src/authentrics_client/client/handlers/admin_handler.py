@@ -68,16 +68,14 @@ class AdminHandler(BaseHandler):
     def update_admin(
         self,
         user_id: str,
+        email: str,
         *,
-        email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
         **kwargs,
     ) -> None:
         """Update a user."""
-        data = {}
-        if email is not None:
-            data["emailAddress"] = email
+        data = {"emailAddress": email}
         if roles is not None:
             data["roles"] = roles
         if enabled is not None:
@@ -92,16 +90,14 @@ class AdminHandler(BaseHandler):
     def update_user(
         self,
         user_id: str,
+        email: str,
         *,
-        email: str | None = None,
         roles: list[str] | None = None,
         enabled: bool | None = None,
         **kwargs,
     ) -> None:
         """Update a user."""
-        data = {}
-        if email is not None:
-            data["emailAddress"] = email
+        data = {"emailAddress": email}
         if roles is not None:
             data["roles"] = roles
         if enabled is not None:
