@@ -89,7 +89,7 @@ class CheckpointHandler(BaseHandler):
         with open(new_checkpoint_path, "wb") as f:
             response = self.get(
                 f"/project/file/{checkpoint_id}",
-                params={"projectId": project_id},
+                params={"projectId": project_id, **kwargs},
                 stream=True,
             )
             if response.headers.get("Content-Type") != "application/octet-stream":
@@ -127,7 +127,7 @@ class CheckpointHandler(BaseHandler):
         with open(zip_file_path, "wb") as f:
             response = self.get(
                 "/project/file",
-                params={"projectId": project_id},
+                params={"projectId": project_id, **kwargs},
                 stream=True,
             )
             if response.headers.get("Content-Type") != "application/octet-stream":

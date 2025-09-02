@@ -16,9 +16,9 @@ class StaticHandler(BaseHandler):
 
     def static_analysis(
         self,
+        *,
         project_id: str,
         checkpoint_id: str,
-        *,
         comparison: Comparison | str = Comparison.PREVIOUS,
         weight_names: list[str] | None = None,
         bias_names: list[str] | None = None,
@@ -56,10 +56,10 @@ class StaticHandler(BaseHandler):
 
     def exclude(
         self,
+        *,
         project_id: str,
         checkpoints_to_exclude: list[str],
         new_checkpoint_path: str | Path,
-        *,
         overwrite: bool = False,
         **kwargs,
     ):
@@ -96,11 +96,11 @@ class StaticHandler(BaseHandler):
 
     def metatune(
         self,
+        *,
         project_id: str,
         checkpoints_to_tune: list[str],
         amplitudes: list[float],
         new_checkpoint_path: str | Path,
-        *,
         overwrite: bool = False,
         **kwargs,
     ) -> None:

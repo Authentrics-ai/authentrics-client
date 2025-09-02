@@ -11,7 +11,12 @@ class MembershipHandler(BaseHandler):
         return self.get(f"/project/{project_id}/user").json()
 
     def add_project_member(
-        self, project_id: str, email: str, permissions: list[str], **kwargs
+        self,
+        *,
+        project_id: str,
+        email: str,
+        permissions: list[str],
+        **kwargs,
     ) -> dict:
         """Add a member to a project."""
         return self.post(
@@ -25,6 +30,7 @@ class MembershipHandler(BaseHandler):
 
     def update_project_member(
         self,
+        *,
         project_id: str,
         user_id: str,
         permissions: list[str],
