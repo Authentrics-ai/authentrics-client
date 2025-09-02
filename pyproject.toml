@@ -1,7 +1,7 @@
 [project]
 
 name = "authentrics-client"
-version = "1.1.0.dev1"
+version = "1.1.0"
 description = "Python client for Authentrics.ai backend libraries"
 authors = [
     { name = "Michael Jacobs", email = "michael.jacobs@authentrics.ai" },
