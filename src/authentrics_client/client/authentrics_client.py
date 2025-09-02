@@ -6,6 +6,7 @@ from .handlers import (
     AuthenticationHandler,
     CheckpointHandler,
     DynamicHandler,
+    MembershipHandler,
     ProjectHandler,
     StaticHandler,
     UserHandler,
@@ -17,9 +18,10 @@ __all__ = ["AuthentricsClient"]
 class AuthentricsClient(BaseClient):
     """A client for interacting with the Authentrics API.
 
-    For requests involving file uploads, use the `Multipart` class as the argument to
-    the `files` keyword argument. For all other requests, use the `json` keyword
-    argument.
+    For requests involving file uploads, use the
+    :func:`authentrics_client.generate_multipart_json`
+    function as the argument to the `files` keyword argument. For all other requests,
+    use the `json` keyword argument.
     """
 
     def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
@@ -37,6 +39,7 @@ class AuthentricsClient(BaseClient):
         self._auth = AuthenticationHandler(self)
         self._checkpoint = CheckpointHandler(self)
         self._dynamic = DynamicHandler(self)
+        self._membership = MembershipHandler(self)
         self._project = ProjectHandler(self)
         self._static = StaticHandler(self)
         self._user = UserHandler(self)
@@ -62,6 +65,11 @@ class AuthentricsClient(BaseClient):
         checkpoint.
         """
         return self._dynamic
+
+    @property
+    def membership(self) -> MembershipHandler:
+        """Handles membership-related operations."""
+        return self._membership
 
     @property
     def project(self) -> ProjectHandler:

@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
@@ -60,7 +61,14 @@ def generate_multipart_json(
     d: dict[str, tuple[Optional[str], Any, Optional[str]]] = {}
 
     for name, value in kwargs.items():
-        d[name] = (None, value, "text/plain")
+        if isinstance(value, (str, bytes, int, float, bool)):
+            d[name] = (None, value, "text/plain")
+        elif isinstance(value, (list, tuple)):
+            d[name] = (None, ",".join(str(v) for v in value), "text/plain")
+        elif isinstance(value, dict):
+            d[name] = (None, json.dumps(value), "text/plain")
+        else:
+            raise ValueError(f"Unsupported type: {type(value)}")
 
     if filepath is None:
         return d
@@ -88,7 +96,11 @@ class FileType(Enum):
         HF_IT2T: Hugging Face checkpoint file for image text to text (e.g., Gemma)
     """
 
-    ONNX = "onnx"
-    KERAS = "keras"
-    HF_TEXT = "hf_text_generation"
-    HF_IT2T = "hf_image_text_to_text"
+    ONNX = "ONNX"
+    """ONNX file"""
+    KERAS = "KERAS"
+    """Keras file"""
+    HF_TEXT = "HF_TEXT_GENERATION"
+    """Hugging Face checkpoint file for text generation (e.g., Llama)"""
+    HF_IT2T = "HF_IMAGE_TEXT_TO_TEXT"
+    """Hugging Face checkpoint file for image text to text (e.g., Gemma)"""

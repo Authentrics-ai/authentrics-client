@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 
 from ..types import FileType, generate_multipart_json
@@ -9,7 +10,7 @@ __all__ = ["CheckpointHandler"]
 class CheckpointHandler(BaseHandler):
     """A handler for interacting with model checkpoints in the Authentrics API."""
 
-    def upload_checkpoint(
+    def add_checkpoint(
         self,
         project_id: str,
         file_path: str | Path,
@@ -17,6 +18,7 @@ class CheckpointHandler(BaseHandler):
         *,
         checkpoint_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Upload a checkpoint.
 
@@ -48,8 +50,9 @@ class CheckpointHandler(BaseHandler):
             "projectId": project_id,
             "format": FileType(model_format).value,
         }
+        data.update(kwargs)
         if checkpoint_name is not None:
-            data["name"] = checkpoint_name
+            data["fileName"] = checkpoint_name
         if tag is not None:
             data["tag"] = tag
 
@@ -58,20 +61,104 @@ class CheckpointHandler(BaseHandler):
             files=generate_multipart_json(file_path, **data),
         ).json()
 
-    def delete_checkpoint(self, project_id: str, checkpoint_id: str) -> dict:
+    def download_checkpoint(
+        self,
+        project_id: str,
+        checkpoint_id: str,
+        new_checkpoint_path: str | Path,
+        *,
+        overwrite: bool = True,
+        **kwargs,
+    ) -> None:
+        """Download a checkpoint.
+
+        Args:
+            project_id: The ID of the project to get the checkpoint from.
+            checkpoint_id: The ID of the checkpoint to download.
+            new_checkpoint_path: The path to save the checkpoint to.
+            overwrite: Whether to overwrite the checkpoint if it already exists.
+            If False, an error will be raised if the checkpoint already exists.
+        """
+
+        new_checkpoint_path = Path(new_checkpoint_path)
+        if new_checkpoint_path.exists() and not overwrite:
+            raise FileExistsError(f"File {new_checkpoint_path} already exists")
+
+        new_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(new_checkpoint_path, "wb") as f:
+            response = self.get(
+                f"/project/file/{checkpoint_id}",
+                params={"projectId": project_id, **kwargs},
+                stream=True,
+            )
+            if response.headers.get("Content-Type") != "application/octet-stream":
+                warnings.warn(
+                    "The response is not an octet stream. An error may have occurred.",
+                    stacklevel=1,
+                )
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    def download_all_checkpoints(
+        self,
+        project_id: str,
+        zip_file_path: str | Path,
+        *,
+        overwrite: bool = True,
+        **kwargs,
+    ) -> None:
+        """Download all checkpoints into a zip file.
+
+        Args:
+            project_id: The ID of the project to get the checkpoint from.
+            zip_file_path: The path to save the zip file to.
+            overwrite: Whether to overwrite the checkpoint if it already exists.
+            If False, an error will be raised if the checkpoint already exists.
+        """
+
+        zip_file_path = Path(zip_file_path)
+        if zip_file_path.exists() and not overwrite:
+            raise FileExistsError(f"File {zip_file_path} already exists")
+
+        zip_file_path.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(zip_file_path, "wb") as f:
+            response = self.get(
+                "/project/file",
+                params={"projectId": project_id, **kwargs},
+                stream=True,
+            )
+            if response.headers.get("Content-Type") != "application/octet-stream":
+                warnings.warn(
+                    "The response is not an octet stream. An error may have occurred.",
+                    stacklevel=1,
+                )
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    f.write(chunk)
+
+    def delete_checkpoint(
+        self,
+        project_id: str,
+        checkpoint_id: str,
+        *,
+        hard_delete: bool | None = None,
+    ) -> None:
         """Delete a checkpoint.
 
         Args:
             project_id: The ID of the project to delete the checkpoint from.
             checkpoint_id: The ID of the checkpoint to delete.
-
-        Returns:
-            The project without the deleted checkpoint.
+            hard_delete (Optional): Whether to hard delete the checkpoint. If not
+            provided, the checkpoint will be soft deleted.
         """
-        return self.delete(
-            "/project/file",
-            json={"projectId": project_id, "fileId": checkpoint_id},
-        ).json()
+        data = {"projectId": project_id, "fileId": checkpoint_id}
+        if hard_delete is not None:
+            data["hardDelete"] = bool(hard_delete)
+
+        self.delete("/project/file", json=data)
 
     def update_checkpoint(
         self,
@@ -79,8 +166,10 @@ class CheckpointHandler(BaseHandler):
         checkpoint_id: str,
         *,
         file_path: str | Path | None = None,
+        model_format: str | FileType | None = None,
         checkpoint_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Update a checkpoint.
 
@@ -89,6 +178,8 @@ class CheckpointHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to update.
             file_path (Optional): The path to the checkpoint file. If None, only the
             metadata of the checkpoint is updated.
+            model_format (Optional): The format of the checkpoint file (must match the
+            project's model format).
             checkpoint_name (Optional): The display name of the checkpoint.
             tag (Optional): The tag of the checkpoint, for identifying the checkpoint
             with the data it was trained on.
@@ -96,14 +187,24 @@ class CheckpointHandler(BaseHandler):
         Returns:
             The project with the updated checkpoint.
         """
+        if file_path is not None:
+            if model_format is None:
+                raise ValueError("model_format is required if file_path is provided")
+            if checkpoint_name is None:
+                raise ValueError("checkpoint_name is required if file_path is provided")
+
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
         }
         if checkpoint_name is not None:
-            data["name"] = checkpoint_name
+            data["fileName"] = checkpoint_name
         if tag is not None:
             data["tag"] = tag
+        if model_format is not None:
+            data["format"] = FileType(model_format).value
+        data.update(kwargs)
+
         return self.patch(
             "/project/file",
             files=generate_multipart_json(file_path, **data),
@@ -117,6 +218,7 @@ class CheckpointHandler(BaseHandler):
         *,
         file_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Add an external checkpoint to a project, saved in the same bucket as the
         project.
@@ -139,6 +241,7 @@ class CheckpointHandler(BaseHandler):
             "format": FileType(model_format).value,
             "fileName": file_name or file_path.rsplit("/", 1)[-1],
         }
+        data.update(kwargs)
         if tag is not None:
             data["tag"] = tag
 
@@ -156,6 +259,7 @@ class CheckpointHandler(BaseHandler):
         file_path: str | Path | None = None,
         file_name: str | None = None,
         tag: str | None = None,
+        **kwargs,
     ) -> dict:
         """Update an external checkpoint."""
         data = {
@@ -171,20 +275,20 @@ class CheckpointHandler(BaseHandler):
             data["fileName"] = file_name
         if tag is not None:
             data["tag"] = tag
+        data.update(kwargs)
 
         return self.patch(
             "/project/file/external",
             json=data,
         ).json()
 
-    def trigger_file_event(self, project_id: str, checkpoint_id: str) -> None:
+    def trigger_file_event(self, project_id: str, checkpoint_id: str, **kwargs) -> None:
         """Trigger the calculation of the summary scores and validation of a checkpoint.
 
         Args:
             project_id: The ID of the project to trigger the file event for.
             checkpoint_id: The ID of the checkpoint to trigger the file event for.
         """
-        self.post(
-            "/project/file_event",
-            json={"projectId": project_id, "fileId": checkpoint_id},
-        )
+        data = {"projectId": project_id, "fileId": checkpoint_id}
+        data.update(kwargs)
+        self.post("/project/file_event", json=data)

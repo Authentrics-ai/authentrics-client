@@ -51,6 +51,7 @@ class AuthenticationHandler(BaseHandler):
 
     def register(
         self,
+        *,
         username: str,
         email: str,
         password: str,
@@ -79,8 +80,8 @@ class AuthenticationHandler(BaseHandler):
         if decoded["exp"] < datetime.now().timestamp():
             raise ValueError("Token has expired")
 
-        old_authorization = self._session.headers.get("Authorization")
-        self._session.headers["Authorization"] = f"Bearer {token}"
+        old_authorization = self._client._session.headers.get("Authorization")
+        self._client._session.headers["Authorization"] = f"Bearer {token}"
 
         # Is this a valid user token?
         try:
@@ -97,9 +98,9 @@ class AuthenticationHandler(BaseHandler):
             pass
 
         if old_authorization is not None:
-            self._session.headers["Authorization"] = old_authorization
+            self._client._session.headers["Authorization"] = old_authorization
         else:
-            self._session.headers.pop("Authorization")
+            self._client._session.headers.pop("Authorization")
 
         raise ValueError("Invalid token")
 
