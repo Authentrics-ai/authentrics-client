@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Optional
+
 from .base_handler import BaseHandler
 
 __all__ = ["AdminHandler"]
@@ -70,8 +74,8 @@ class AdminHandler(BaseHandler):
         user_id: str,
         email: str,
         *,
-        roles: list[str] | None = None,
-        enabled: bool | None = None,
+        roles: Optional[list[str]] = None,
+        enabled: Optional[bool] = None,
         **kwargs,
     ) -> None:
         """Update a user."""

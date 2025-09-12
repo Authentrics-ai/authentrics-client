@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .base_handler import BaseHandler
 
 __all__ = ["UserHandler"]

@@ -2431,4 +2431,4 @@ transformers = ["click", "platformdirs", "transformers"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9,<4.0"
-content-hash = "0166ec1ac683efc26e50e85a276cd38ea8fab6bb4c2b1a842f11ebc7dbf6d016"
+content-hash = "39bc118331917bb8dba4be511018aca18149e6e4e4155bb8d6b717ad7cb6156b"
