@@ -60,7 +60,21 @@ class AuthenticationHandler(BaseHandler):
         first_name: str,
         last_name: str,
     ) -> None:
-        """Register a new user."""
+        """Register a new user.
+
+        Args:
+            username (str): Unique username for the user
+            email (str): Email address for the user
+            password (str): Password for the user
+            first_name (str): First name of the user
+            last_name (str): Last name of the user
+
+        Raises:
+            HTTPError: If the user registration fails
+            (e.g., username/email already exists)
+
+        Note: The user will be created as disabled by default.
+        """
         self.post(
             "/api/auth/register",
             json={

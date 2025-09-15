@@ -32,16 +32,34 @@ class StaticHandler(BaseHandler):
         previous one, optionally with respect to the latest checkpoint.
 
         Args:
-            project_id: The ID of the project to run static analysis on.
-            checkpoint_id: The ID of the checkpoint to run static analysis on.
-            comparison: The comparison to perform (default: 'PREVIOUS').
-            weight_names: The names of the weights to include in the analysis. By default,
-            all weights are included.
-            bias_names: The names of the biases to include in the analysis. By default,
-            all biases are included.
+            project_id (str): The ID of the project to run static analysis on.
+            checkpoint_id (str): The ID of the checkpoint to run static analysis on.
+            comparison (:class:`Comparison` | str): The comparison to perform (default:
+            'PREVIOUS').
+            weight_names (list[str]): The names of the weights to include in the analysis.
+            By default, all weights are included.
+            bias_names (list[str]): The names of the biases to include in the analysis.
+            By default, all biases are included.
+            **kwargs: Additional keyword arguments to pass to the analysis.
 
         Returns:
-            A dictionary containing the static analysis results.
+            A dictionary containing the static analysis results. The structure of the
+            dictionary is as follows:
+            - metadata (dict): The metadata of the analysis.
+            - weight_summary_score (float): The score of the weight summary.
+            - bias_summary_score (float): The score of the bias summary.
+            - absolute_weight_difference (`dict[str, np.ndarray]`): The weight difference
+            for each layer.
+            - absolute_bias_difference (`dict[str, np.ndarray]`): The bias difference
+            for each layer.
+            - relative_weight_difference (`dict[str, np.ndarray]`): The weight difference
+            for each layer normalized by that layer's weight in the original checkpoint
+            (if comparison is 'PREVIOUS') or the latest checkpoint (if comparison is
+            'ALL').
+            - relative_bias_difference (`dict[str, np.ndarray]`): The bias difference
+            for each layer normalized by that layer's bias in the original checkpoint
+            (if comparison is 'PREVIOUS') or the latest checkpoint (if comparison is
+            'ALL').
         """
         data: dict[str, Any] = {
             "projectId": project_id,
