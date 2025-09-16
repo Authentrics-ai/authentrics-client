@@ -203,14 +203,6 @@ class AdminHandler(BaseHandler):
 
         Returns:
             dict | None: User dictionary if found, None otherwise.
-                The dictionary contains:
-                - id (str): Unique identifier for the user
-                - username (str): User's username
-                - emailAddress (str): User's email address
-                - firstName (str): User's first name
-                - lastName (str): User's last name
-                - roles (list[str]): List of roles assigned to the user
-                - enabled (bool): Whether the user account is enabled
         """
         all_users = self.get_all_users()
         for user in all_users:

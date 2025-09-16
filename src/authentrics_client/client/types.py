@@ -27,15 +27,12 @@ class MethodType(Enum):
 
 
 class Comparison(Enum):
-    """The type of comparison to perform.
-
-    Attributes:
-        ALL: Compare to the latest checkpoint
-        PREVIOUS: Compare to the previous checkpoint
-    """
+    """The type of comparison to perform."""
 
     ALL = "ALL"
+    """Compare to the latest checkpoint"""
     PREVIOUS = "PREVIOUS"
+    """Compare to the previous checkpoint"""
 
 
 def generate_multipart_json(
@@ -47,9 +44,9 @@ def generate_multipart_json(
 
     Args:
         filepath: The path to the file to include in the request. If None, the file is
-        not included in the request.
+            not included in the request.
         **kwargs: Additional form fields to include in the request. By default, the file
-        is included as a file field and these are added as text/plain fields.
+            is included as a file field and these are added as text/plain fields.
 
     Returns:
         A dictionary of form fields to include in the request
@@ -89,14 +86,7 @@ def generate_multipart_json(
 
 
 class FileType(Enum):
-    """The type of a model checkpoint.
-
-    Attributes:
-        ONNX: ONNX file
-        KERAS: Keras file
-        HF_TEXT: Hugging Face checkpoint file for text generation (e.g., Llama)
-        HF_IT2T: Hugging Face checkpoint file for image text to text (e.g., Gemma)
-    """
+    """The type of a model checkpoint."""
 
     ONNX = "ONNX"
     """ONNX file"""

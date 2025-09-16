@@ -20,20 +20,11 @@ __all__ = ["AuthentricsClient"]
 class AuthentricsClient(BaseClient):
     """A client for interacting with the Authentrics API.
 
-    For requests involving file uploads, use the
-    :func:`authentrics_client.generate_multipart_json`
-    function as the argument to the `files` keyword argument. For all other requests,
-    use the `json` keyword argument.
+    Use the built-in handlers to make standard requests to the API. For custom requests,
+    use the get/post/etc. methods from :class:`BaseClient`.
     """
 
     def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
-        """Initialize the Authentrics client.
-
-        Args:
-            base_url: The base URL of the Authentrics API.
-            proxy_url: Optional proxy URL to use for requests. If not provided, no proxy
-            will be used.
-        """
         super().__init__(base_url, proxy_url)
         self._session.headers["clientName"] = "authrx-client"
 

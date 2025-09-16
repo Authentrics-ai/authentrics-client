@@ -33,10 +33,11 @@ class DynamicHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_path: Path to the local stimulus file to analyze.
             layer_names: Optional list of layer names to analyze. Default is to use all
-            layers.
+                layers.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+            **kwargs: Additional keyword arguments to pass to the analysis.
 
         Returns:
             dict: The analysis results.
@@ -81,14 +82,15 @@ class DynamicHandler(BaseHandler):
         Args:
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
-            layer_names: Optional list of layer names to analyze. Default is to use all
-            layers.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
-            in the same bucket as the checkpoint.
+                in the same bucket as the checkpoint.
+            layer_names: Optional list of layer names to analyze. Default is to use all
+                layers.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
             batch_size: Number of files to process in each batch. Defaults to 1.
+            **kwargs: Additional keyword arguments to pass to the analysis.
 
         Returns:
             dict: The analysis results.
@@ -128,10 +130,14 @@ class DynamicHandler(BaseHandler):
             stimulus_path: Path to the local stimulus file to analyze.
             comparison: The type of comparison to perform.
             layer_names: Optional list of layer names to analyze. Default is to use all
-            layers.
+                layers.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+            **kwargs: Additional keyword arguments to pass to the analysis.
+
+        Returns:
+            dict: The analysis results.
         """
         stimulus_path = Path(stimulus_path)
         if isinstance(inference_config, dict):
@@ -174,16 +180,18 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
-            in the same bucket as the checkpoint.
+                in the same bucket as the checkpoint.
             comparison: The type of comparison to perform.
             layer_names: Optional list of layer names to analyze. Default is to use all
-            layers.
+                layers.
             batch_size: Number of files to process in each batch. Defaults to 1.
             unchanged_activation_threshold: The threshold for considering a layer
-            unchanged. Default is 0.0.
+                unchanged. Default is 0.0.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+            **kwargs: Additional keyword arguments to pass to the analysis.
+
         Returns:
             dict: The analysis results.
         """
@@ -225,13 +233,17 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
-            in the same bucket as the checkpoint.
+                in the same bucket as the checkpoint.
             layer_names: Optional list of layer names to analyze. Default is to use all
-            layers.
+                layers.
             batch_size: Number of files to process in each batch. Defaults to 1.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+            **kwargs: Additional keyword arguments to pass to the analysis.
+
+        Returns:
+            dict: The analysis results.
         """
         if isinstance(inference_config, dict):
             inference_config = json.dumps(inference_config)
@@ -266,8 +278,11 @@ class DynamicHandler(BaseHandler):
             stimulus_path: Path to the local stimulus file to analyze.
             amplitude: The amplitude of the change to the checkpoint.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+
+        Returns:
+            dict: The analysis results.
 
         Note: For the amplitude, 0.0 means the influence of the checkpoint is not changed,
         1.0 means the influence of the checkpoint is fully applied, and -1.0 means the
@@ -310,12 +325,13 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
-            in the same bucket as the checkpoint.
+                in the same bucket as the checkpoint.
             amplitude: The amplitude of the change to the checkpoint.
             batch_size: Number of files to process in each batch. Defaults to 1.
             inference_config: Optional inference configuration to use for the analysis.
-            If a string is provided, it is assumed to be a JSON string and will be parsed
-            as a dictionary.
+                If a string is provided, it is assumed to be a JSON string and will be
+                parsed as a dictionary.
+
         Returns:
             dict: The analysis results.
         """

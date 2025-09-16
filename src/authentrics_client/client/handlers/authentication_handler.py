@@ -71,7 +71,7 @@ class AuthenticationHandler(BaseHandler):
 
         Raises:
             HTTPError: If the user registration fails
-            (e.g., username/email already exists)
+                (e.g., username/email already exists)
 
         Note: The user will be created as disabled by default.
         """

@@ -23,12 +23,6 @@ class BaseClient:
     """
 
     def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
-        """A client for interacting with a given URL.
-
-        Args:
-            base_url: The base URL of the API server
-            proxy_url: Optional proxy URL (e.g., 'socks5h://localhost:1080')
-        """
         self.base_url = base_url
         """The parsed base URL of the API server."""
 

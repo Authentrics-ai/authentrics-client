@@ -39,7 +39,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             list[dict]: List of project dictionaries. See :class:`ProjectHandler`
-                for the structure of the project dictionary.
+            for the structure of the project dictionary.
         """
         return self.get("/project").json()
 
@@ -51,7 +51,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The project dictionary. See :class:`ProjectHandler` for the
-                structure of the project dictionary.
+            structure of the project dictionary.
 
         Raises:
             HTTPError: If the project is not found or access is denied
@@ -66,7 +66,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The model metadata dictionary containing information about
-                the model's structure, parameters, and configuration
+            the model's structure, parameters, and configuration
 
         Raises:
             HTTPError: If the project is not found or metadata is unavailable
@@ -81,7 +81,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict | None: The project dictionary if found, None otherwise.
-                See :class:`ProjectHandler` for the structure of the project dictionary.
+            See :class:`ProjectHandler` for the structure of the project dictionary.
 
         Note:
             This method performs a client-side search through all projects.
@@ -108,7 +108,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The created project dictionary. See :class:`ProjectHandler` for
-                the structure of the project dictionary.
+            the structure of the project dictionary.
 
         Raises:
             HTTPError: If the project creation fails (e.g., name already exists)
@@ -165,7 +165,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The updated project dictionary. See :class:`ProjectHandler` for
-                the structure of the project dictionary.
+            the structure of the project dictionary.
 
         Raises:
             HTTPError: If the update fails (e.g., project not found, invalid data)
@@ -199,7 +199,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The project dictionary with the new classification file.
-                See :class:`ProjectHandler` for the structure of the project dictionary.
+            See :class:`ProjectHandler` for the structure of the project dictionary.
 
         Raises:
             FileNotFoundError: If the classification file doesn't exist
@@ -224,7 +224,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The project dictionary after removing the classification file.
-                See :class:`ProjectHandler` for the structure of the project dictionary.
+            See :class:`ProjectHandler` for the structure of the project dictionary.
 
         Raises:
             HTTPError: If the deletion fails (e.g., project not found,
@@ -250,7 +250,7 @@ class ProjectHandler(BaseHandler):
 
         Returns:
             dict: The project dictionary with the updated classification file.
-                See :class:`ProjectHandler` for the structure of the project dictionary.
+            See :class:`ProjectHandler` for the structure of the project dictionary.
 
         Raises:
             FileNotFoundError: If the classification file doesn't exist
