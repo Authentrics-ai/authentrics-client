@@ -22,8 +22,24 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinxdoc"
+html_theme = "agogo"
 html_static_path = ["_static"]
+html_theme_options = {
+    # "bodyfont": "",
+    # "headerfont": "",
+    "pagewidth": "80em",
+    "documentwidth": "50em",
+    "sidebarwidth": "30em",
+    "rightsidebar": "true",
+    "bgcolor": "#0f0f0f",
+    "headerbg": "#000000",
+    "footerbg": "#000000",
+    "linkcolor": "#D984A3",
+    "headercolor1": "#47215C",
+    "headercolor2": "#A65198",
+    "headerlinkcolor": "#D984A3",
+    # "textalign": "",
+}
 
 # Autodoc configuration
 autodoc_member_order = "bysource"
