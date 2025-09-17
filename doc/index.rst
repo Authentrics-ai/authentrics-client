@@ -6,7 +6,7 @@
 Authentrics Client documentation
 ================================
 
-A Python client for Authentrics.ai backend libraries that provides tools for checkpoint management, model analysis, and parameter editing.
+A Python client for `Authentrics.ai <https://authentrics.ai>`_ backend libraries that provides tools for checkpoint management, model analysis, and parameter editing.
 
 
 Quick Start
@@ -63,11 +63,7 @@ Quick Start
     print(result)
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :hidden:
-   
-   /api_reference/AuthentricsClient
-   /api_reference/handlers/index
-   /api_reference/types/index
-   /api_reference/transformers/index
-   /api_reference/base_classes/index
+
+   /api

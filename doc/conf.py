@@ -31,11 +31,11 @@ html_theme_options = {
     "documentwidth": "50em",
     "sidebarwidth": "30em",
     "rightsidebar": "true",
-    "bgcolor": "#0f0f0f",
-    "headerbg": "#000000",
-    "footerbg": "#000000",
+    "bgcolor": "#47215C",
+    "headerbg": "#47215C",
+    "footerbg": "#47215C",
     "linkcolor": "#D984A3",
-    "headercolor1": "#47215C",
+    # "headercolor1": "#47215C",
     "headercolor2": "#A65198",
     "headerlinkcolor": "#D984A3",
     # "textalign": "",
@@ -46,6 +46,4 @@ autodoc_member_order = "bysource"
 autodoc_default_options = {
     "members": True,
     "member-order": "bysource",
-    "special-members": "__init__",
-    "undoc-members": True,
 }
