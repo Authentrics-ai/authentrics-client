@@ -8,7 +8,6 @@ If you need to make a custom request, use the get/post/etc. methods inherited fr
 .. toctree::
     :maxdepth: 1
 
-    handlers/base_handler
     handlers/admin_handler
     handlers/authentication_handler
     handlers/checkpoint_handler
@@ -17,3 +16,4 @@ If you need to make a custom request, use the get/post/etc. methods inherited fr
     handlers/project_handler
     handlers/static_handler
     handlers/user_handler
+    handlers/base_handler

@@ -6,8 +6,24 @@
 Authentrics Client documentation
 ================================
 
-A Python client for `Authentrics.ai <https://authentrics.ai>`_ backend libraries that provides tools for checkpoint management, model analysis, and parameter editing.
+A Python client for `Authentrics.ai <https://authentrics.ai>`_ backend libraries that provides tools for checkpoint
+management, model analysis, and parameter editing.
 
+Typically, Authentrics.ai software is deployed to each user's infrastructure as a service, and the client is used to
+interact with the service.
+
+Under the hood, this client uses the `requests <https://requests.readthedocs.io/en/latest/>`_ library to make requests to the
+Authentrics API. For methods that return data, the response is parsed into a Python object, usually a dictionary.
+
+Installation
+============
+
+You can install the client using pip:
+
+.. code-block:: bash
+
+    pip install 'authentrics-client@git+https://github.com/Authentrics-ai/authentrics-client.git'
+    
 
 Quick Start
 ===========
