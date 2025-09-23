@@ -5,7 +5,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-__all__ = ["FileType", "Comparison"]
+__all__ = ["FileType", "Comparison", "MOEAnalysisType"]
 
 
 class MethodType(Enum):
@@ -36,6 +36,17 @@ class Comparison(Enum):
 
     ALL = "ALL"
     PREVIOUS = "PREVIOUS"
+
+class MOEAnalysisType(Enum):
+    """The type of MoE analysis to perform.
+
+    Attributes:
+        EXPERT: Expert analysis
+        ROUTER: Router analysis
+    """
+
+    EXPERT = "EXPERT"
+    ROUTER = "ROUTER"
 
 
 def generate_multipart_json(
