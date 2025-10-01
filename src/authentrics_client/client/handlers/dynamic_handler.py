@@ -254,7 +254,7 @@ class DynamicHandler(BaseHandler):
         project_id: str,
         checkpoint_id: str,
         stimulus_path: str | Path,
-        amplitude: float,
+        scaling_factor: float,
         inference_config: dict | str | None = None,
         **kwargs,
     ) -> dict:
@@ -264,14 +264,15 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_path: Path to the local stimulus file to analyze.
-            amplitude: The amplitude of the change to the checkpoint.
+            scaling_factor: The scaling factor of the change to the checkpoint.
             inference_config: Optional inference configuration to use for the analysis.
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
 
-        Note: For the amplitude, 0.0 means the influence of the checkpoint is not changed,
-        1.0 means the influence of the checkpoint is fully applied, and -1.0 means the
-        influence of the checkpoint is fully removed (as in `StaticHandler.exclude()`).
+        Note: For the scaling factor, 0.0 means the influence of the checkpoint is not
+        changed, 1.0 means the influence of the checkpoint is fully applied, and -1.0
+        means the influence of the checkpoint is fully removed (as in
+        `StaticHandler.exclude()`).
         """
         if isinstance(inference_config, dict):
             inference_config = json.dumps(inference_config)
@@ -282,7 +283,7 @@ class DynamicHandler(BaseHandler):
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "parameter": str(amplitude),
+            "scalingFactor": str(scaling_factor),
         }
         if inference_config is not None:
             data["inferenceConfigJson"] = inference_config
@@ -298,7 +299,7 @@ class DynamicHandler(BaseHandler):
         project_id: str,
         checkpoint_id: str,
         stimulus_paths: list[str],
-        amplitude: float,
+        scaling_factor: float,
         *,
         batch_size: int = 1,
         inference_config: dict | str | None = None,
@@ -311,7 +312,7 @@ class DynamicHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
             in the same bucket as the checkpoint.
-            amplitude: The amplitude of the change to the checkpoint.
+            scaling_factor: The scaling factor of the change to the checkpoint.
             batch_size: Number of files to process in each batch. Defaults to 1.
             inference_config: Optional inference configuration to use for the analysis.
             If a string is provided, it is assumed to be a JSON string and will be parsed
@@ -326,7 +327,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
-            "parameter": str(amplitude),
+            "scalingFactor": str(scaling_factor),
         }
         if inference_config is not None:
             data["inferenceConfigJson"] = inference_config
@@ -355,7 +356,8 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_path: Path to the local stimulus file to analyze.
-            layer_names: List of layer names to analyze. Must be either router/gate layers or expert layers.
+            layer_names: List of layer names to analyze. Must be either router/gate layers
+            or expert layers.
             analysis_type: The type of MoE analysis to perform.
             num_experts: The number of experts to be included in the topK selection when
             analyzing router/gate layers.
@@ -406,7 +408,8 @@ class DynamicHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
             in the same bucket as the checkpoint.
-            layer_names: List of layer names to analyze. Must be either router/gate layers or expert layers.
+            layer_names: List of layer names to analyze. Must be either router/gate layers
+            or expert layers.
             analysis_type: The type of MoE analysis to perform.
             num_experts: The number of experts to be included in the topK selection when
             analyzing router/gate layers.
