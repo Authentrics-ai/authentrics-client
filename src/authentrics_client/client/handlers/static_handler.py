@@ -80,7 +80,7 @@ class StaticHandler(BaseHandler):
 
         data = {
             "projectId": project_id,
-            "fileId": checkpoints_to_exclude,
+            "fileIds": checkpoints_to_exclude,
         }
         data.update(kwargs)
 
@@ -101,7 +101,7 @@ class StaticHandler(BaseHandler):
         *,
         project_id: str,
         checkpoints_to_tune: list[str],
-        amplitudes: list[float],
+        scaling_factors: list[float],
         new_checkpoint_path: str | Path,
         overwrite: bool = False,
         **kwargs,
@@ -111,24 +111,26 @@ class StaticHandler(BaseHandler):
         Args:
             project_id: The ID of the project to edit the latest checkpoint of.
             checkpoints_to_tune: The IDs of the checkpoints to tune.
-            amplitudes: The amplitudes of the tunings, must be the same length as
-            `checkpoints_to_tune`.
+            scaling_factors: The scaling factors of the tunings, must be the same length
+            as `checkpoints_to_tune`.
             new_checkpoint_path: The path to save the new checkpoint to.
             overwrite: Whether to overwrite the new checkpoint if it already exists.
             If False, an error will be raised if the new checkpoint already exists.
 
-        Note: For the amplitudes, 0.0 means the influence of the checkpoint is not
+        Note: For the scaling factors, 0.0 means the influence of the checkpoint is not
         changed, 1.0 means the influence of the checkpoint is fully applied, and -1.0
         means the influence of the checkpoint is fully removed (as in
         `StaticHandler.exclude()`).
         """
-        if len(checkpoints_to_tune) != len(amplitudes):
-            raise ValueError("checkpoints_to_tune and amplitudes must be the same length")
+        if len(checkpoints_to_tune) != len(scaling_factors):
+            raise ValueError(
+                "checkpoints_to_tune and scaling_factors must be the same length"
+            )
 
         data = {
             "projectId": project_id,
-            "fileId": checkpoints_to_tune,
-            "parameterList": amplitudes,
+            "fileIds": checkpoints_to_tune,
+            "scalingFactors": scaling_factors,
         }
         data.update(kwargs)
 
