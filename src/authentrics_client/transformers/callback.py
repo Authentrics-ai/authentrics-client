@@ -16,10 +16,6 @@ from transformers import (
 from .. import AuthentricsClient, FileType
 from ..cli import TOKEN_PATH
 
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
 
 class AuthentricsCallback(TrainerCallback):
     def __init__(
@@ -28,6 +24,7 @@ class AuthentricsCallback(TrainerCallback):
         save_stats_local: bool,
         *features,
         model_format: str | FileType = FileType.HF_TEXT,
+        logger: logging.Logger | None = None,
     ):
         # check if we are logged in and already have a token
         self.session = self._check_authorization()
@@ -35,8 +32,18 @@ class AuthentricsCallback(TrainerCallback):
         self.save_stats_local = save_stats_local
         self.model_format = FileType(model_format)
         self.project = self.session.get_project_by_name(self.project_name)
+        self.logger = logger
+        if self.logger is None:
+            self.logger = logging.getLogger(__name__)
+            handler = logging.StreamHandler()
+            handler.setFormatter(
+                logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            )
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
+
         if self.project is None:
-            logging.info("Project not found, Creating new project")
+            self.logger.info("Project not found, Creating new project")
             self.project = self.session.post(
                 "/project",
                 json={
@@ -46,12 +53,12 @@ class AuthentricsCallback(TrainerCallback):
             )
         else:
             files = self.project["file_list"]
-            logging.info(
+            self.logger.info(
                 f"Found project with project name: {self.project_name}."
                 " Current analysis of all checkpoints"
             )
             for file in files:
-                logging.info(
+                self.logger.info(
                     f"File Name: {file['file_name']}\n"
                     f"Weight Contr: {file['total_weight_contribution']}\n"
                     f"Bias Contr: {file['total_bias_contribution']}"
@@ -75,7 +82,7 @@ class AuthentricsCallback(TrainerCallback):
         tar_path = output_dir / f"{checkpoint_name}.tar.gz"
 
         self._tar_directory(artifact_path, tar_path)
-        logging.info(f"Uploading checkpoint artifacts in {ckpt_dir}...")
+        self.logger.info(f"Uploading checkpoint artifacts in {ckpt_dir}...")
 
         assert self.project is not None
 
@@ -92,10 +99,10 @@ class AuthentricsCallback(TrainerCallback):
         assert self.project is not None
         files = self.project["file_list"]
         if len(files) < 2:
-            logging.info("1st checkpoint, not running the static analysis")
+            self.logger.info("1st checkpoint, not running the static analysis")
             return
 
-        logging.info(f"Running Static Analysis for file: {files[-1]['file_name']}")
+        self.logger.info(f"Running Static Analysis for file: {files[-1]['file_name']}")
         static_analysis = self.session.post(
             "/static_analysis",
             json={
@@ -105,9 +112,11 @@ class AuthentricsCallback(TrainerCallback):
             },
         )
 
-        logging.info("Summary status of the current saved checkpoint...")
-        logging.info(f"Weight Summary Score: {static_analysis['weight_summary_score']}")
-        logging.info(f"Bias Summary Score: {static_analysis['bias_summary_score']}")
+        self.logger.info("Summary status of the current saved checkpoint...")
+        self.logger.info(
+            f"Weight Summary Score: {static_analysis['weight_summary_score']}"
+        )
+        self.logger.info(f"Bias Summary Score: {static_analysis['bias_summary_score']}")
 
         if not self.save_stats_local:
             return
@@ -118,14 +127,14 @@ class AuthentricsCallback(TrainerCallback):
             if feature in static_analysis:
                 final_output[feature] = static_analysis[feature]
             else:
-                logging.error(f"Feature: {feature} not available for response")
+                self.logger.error(f"Feature: {feature} not available for response")
         if len(self.features) == 0:
             final_output = static_analysis
 
         project_output_dir = self._create_output_dir(args.output_dir)
         file_name = project_output_dir / f"static_analysis_{checkpoint_name}.json"
 
-        logging.info(f"Created analysis response with file name: {file_name}")
+        self.logger.info(f"Created analysis response with file name: {file_name}")
 
         with open(file_name, "w") as file:
             json.dump(final_output, file, indent=4)
@@ -139,13 +148,13 @@ class AuthentricsCallback(TrainerCallback):
             with TOKEN_PATH.open("r", encoding="utf-8") as file:
                 data = json.load(file)
                 if "token" not in data or "url" not in data:
-                    logging.error("Invalid token file, Please login again")
+                    self.logger.error("Invalid token file, Please login again")
                     raise ValueError("Invalid token file")
 
                 return self._check_token_validity(data)
 
         else:
-            logging.error(
+            self.logger.error(
                 "Login required, use authrx login --username=John --password=*** command"
             )
             raise ValueError(
@@ -159,7 +168,7 @@ class AuthentricsCallback(TrainerCallback):
             session.get("/project")
             return session
         except Exception:
-            logging.error("Expired token. Please login again")
+            self.logger.error("Expired token. Please login again")
             raise ValueError("Expired token. Please login again") from None
 
     def _create_output_dir(self, output_dir: str) -> Path:
