@@ -17,14 +17,42 @@ from ..cli import TOKEN_PATH
 
 
 class AuthentricsCallback(TrainerCallback):
+    """A custom TrainerCallback for integrating with the Authentrics platform.
+
+    This callback handles project creation, logging, and checkpoint analysis
+    for model training runs, and can optionally save statistics locally.
+
+    Args:
+        project_name (str): The name of the project to use or create on Authentrics.
+        *features: Additional features to enable for the callback.
+        save_stats_local (bool, optional): Whether to save statistics locally (default:
+        False).
+        model_format (str | FileType): The format of the model files.
+        logger (logging.Logger | None, optional): Logger instance to use. If None, a
+        default logger is created.
+    """
+
     def __init__(
         self,
         project_name: str,
-        save_stats_local: bool,
         *features,
         model_format: str | FileType,
+        save_stats_local: bool = False,
         logger: logging.Logger | None = None,
     ):
+        """Initialize the AuthentricsCallback.
+
+        Checks for authorization, sets up the project, logger, and stores configuration.
+
+        Args:
+            project_name (str): The name of the project to use or create on Authentrics.
+            save_stats_local (bool, optional): Whether to save statistics locally
+            (default: False).
+            *features: Additional features to enable for the callback.
+            model_format (str | FileType): The format of the model files.
+            logger (logging.Logger | None, optional): Logger instance to use. If None, a
+            default logger is created.
+        """
         # check if we are logged in and already have a token
         self.session = self._check_authorization()
         self.project_name = project_name
