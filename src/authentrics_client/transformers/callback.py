@@ -45,16 +45,16 @@ class AuthentricsCallback(TrainerCallback):
                 },
             )
         else:
-            files = self.project["file_list"]
+            files = self.project["fileList"]
             logging.info(
                 f"Found project with project name: {self.project_name}."
                 " Current analysis of all checkpoints"
             )
             for file in files:
                 logging.info(
-                    f"File Name: {file['file_name']}\n"
-                    f"Weight Contr: {file['total_weight_contribution']}\n"
-                    f"Bias Contr: {file['total_bias_contribution']}"
+                    f"File Name: {file['fileName']}\n"
+                    f"Weight Contr: {file['totalWeightContribution']}\n"
+                    f"Bias Contr: {file['totalBiasContribution']}"
                 )
 
         self.features = features
@@ -82,25 +82,25 @@ class AuthentricsCallback(TrainerCallback):
         self.project = self.session.post(
             "/project/file",
             json={
-                "project_id": self.project["id"],
-                "file_path": tar_path,
-                "file_type": self.model_format.value,
-                "filename": checkpoint_name,
+                "projectId": self.project["id"],
+                "filePath": tar_path,
+                "format": self.model_format.value,
+                "fileName": checkpoint_name,
             },
         )
 
         assert self.project is not None
-        files = self.project["file_list"]
+        files = self.project["fileList"]
         if len(files) < 2:
             logging.info("1st checkpoint, not running the static analysis")
             return
 
-        logging.info(f"Running Static Analysis for file: {files[-1]['file_name']}")
+        logging.info(f"Running Static Analysis for file: {files[-1]['fileName']}")
         static_analysis = self.session.post(
             "/static_analysis",
             json={
-                "project_id": self.project["id"],
-                "file_id": files[-1]["id"],
+                "projectId": self.project["id"],
+                "fileId": files[-1]["id"],
                 "comparison": "PREVIOUS",
             },
         )
