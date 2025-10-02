@@ -28,7 +28,7 @@ for checkpoint in checkpoints:
 
 project = client.project.get_project_by_id(project["id"])
 
-checkpoint_ids = [checkpoint["id"] for checkpoint in project["file_list"]]
+checkpoint_ids = [checkpoint["id"] for checkpoint in project["fileList"]]
 
 results = []
 for checkpoint_id in checkpoint_ids[1:]:
