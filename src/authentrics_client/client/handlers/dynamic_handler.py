@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from ..types import Comparison, MOEAnalysisType, generate_multipart_json
+from ..types import ComparisonType, MOEAnalysisType, generate_multipart_json
 from .base_handler import BaseHandler
 
 __all__ = ["DynamicHandler"]
@@ -115,7 +115,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_path: str | Path,
         *,
-        comparison: Comparison | str = Comparison.PREVIOUS,
+        comparison: ComparisonType | str = ComparisonType.CHOSEN,
         layer_names: list[str] | None = None,
         inference_config: dict | str | None = None,
         **kwargs,
@@ -142,7 +142,7 @@ class DynamicHandler(BaseHandler):
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "comparisonType": Comparison(comparison).value,
+            "comparisonType": ComparisonType(comparison).value,
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
@@ -161,7 +161,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_paths: list[str],
         *,
-        comparison: Comparison | str = Comparison.PREVIOUS,
+        comparison: ComparisonType | str = ComparisonType.CHOSEN,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
         unchanged_activation_threshold: float = 0.0,
@@ -194,7 +194,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
-            "comparisonType": Comparison(comparison).value,
+            "comparisonType": ComparisonType(comparison).value,
             "unchangedActivationThreshold": str(unchanged_activation_threshold),
         }
         if layer_names is not None:

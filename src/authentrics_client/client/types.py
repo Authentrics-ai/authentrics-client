@@ -5,7 +5,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Optional
 
-__all__ = ["FileType", "Comparison", "MOEAnalysisType"]
+__all__ = ["FileType", "ComparisonType", "MOEAnalysisType"]
 
 
 class MethodType(Enum):
@@ -26,16 +26,17 @@ class MethodType(Enum):
     PATCH = "PATCH"
 
 
-class Comparison(Enum):
+class ComparisonType(Enum):
     """The type of comparison to perform.
 
     Attributes:
-        ALL: Compare to the latest checkpoint
-        PREVIOUS: Compare to the previous checkpoint
+        LATEST: Compare to the latest checkpoint
+        CHOSEN: Compare to the chosen checkpoint
     """
 
-    ALL = "ALL"
-    PREVIOUS = "PREVIOUS"
+    LATEST = "LATEST"
+    CHOSEN = "CHOSEN"
+
 
 class MOEAnalysisType(Enum):
     """The type of MoE analysis to perform.
