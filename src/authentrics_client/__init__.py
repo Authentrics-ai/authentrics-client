@@ -1,7 +1,7 @@
 from .client import (
     AuthentricsClient,
     BaseClient,
-    Comparison,
+    ComparisonType,
     FileType,
     generate_multipart_json,
 )
@@ -9,7 +9,7 @@ from .client import (
 __all__ = [
     "AuthentricsClient",
     "BaseClient",
-    "Comparison",
+    "ComparisonType",
     "FileType",
     "generate_multipart_json",
 ]

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from ..types import Comparison
+from ..types import ComparisonType
 from .base_handler import BaseHandler
 
 __all__ = ["StaticHandler"]
@@ -21,7 +21,7 @@ class StaticHandler(BaseHandler):
         *,
         project_id: str,
         checkpoint_id: str,
-        comparison: Comparison | str = Comparison.PREVIOUS,
+        comparison: ComparisonType | str = ComparisonType.CHOSEN,
         weight_names: list[str] | None = None,
         bias_names: list[str] | None = None,
         **kwargs,
@@ -34,7 +34,7 @@ class StaticHandler(BaseHandler):
         Args:
             project_id: The ID of the project to run static analysis on.
             checkpoint_id: The ID of the checkpoint to run static analysis on.
-            comparison: The comparison to perform (default: 'PREVIOUS').
+            comparison: The comparison to perform (default: 'CHOSEN').
             weight_names: The names of the weights to include in the analysis. By default,
             all weights are included.
             bias_names: The names of the biases to include in the analysis. By default,
@@ -46,7 +46,7 @@ class StaticHandler(BaseHandler):
         data: dict[str, Any] = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "comparisonType": Comparison(comparison).value,
+            "comparisonType": ComparisonType(comparison).value,
         }
         if weight_names is not None:
             data["weightNames"] = weight_names
