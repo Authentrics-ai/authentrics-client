@@ -115,7 +115,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_path: str | Path,
         *,
-        comparison: ComparisonType | str = ComparisonType.CHOSEN,
+        comparison_type: ComparisonType | str = ComparisonType.CHOSEN,
         layer_names: list[str] | None = None,
         inference_config: dict | str | None = None,
         **kwargs,
@@ -126,7 +126,7 @@ class DynamicHandler(BaseHandler):
             project_id: The ID of the project to analyze.
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_path: Path to the local stimulus file to analyze.
-            comparison: The type of comparison to perform.
+            comparison_type: The type of comparison to perform.
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
             inference_config: Optional inference configuration to use for the analysis.
@@ -142,7 +142,7 @@ class DynamicHandler(BaseHandler):
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
-            "comparisonType": ComparisonType(comparison).value,
+            "comparisonType": ComparisonType(comparison_type).value,
         }
         if layer_names is not None:
             data["layerNames"] = layer_names
@@ -161,7 +161,7 @@ class DynamicHandler(BaseHandler):
         checkpoint_id: str,
         stimulus_paths: list[str],
         *,
-        comparison: ComparisonType | str = ComparisonType.CHOSEN,
+        comparison_type: ComparisonType | str = ComparisonType.CHOSEN,
         layer_names: list[str] | None = None,
         batch_size: int = 1,
         unchanged_activation_threshold: float = 0.0,
@@ -175,7 +175,7 @@ class DynamicHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to use for analysis.
             stimulus_paths: List of paths to external stimulus files to analyze, stored
             in the same bucket as the checkpoint.
-            comparison: The type of comparison to perform.
+            comparison_type: The type of comparison to perform.
             layer_names: Optional list of layer names to analyze. Default is to use all
             layers.
             batch_size: Number of files to process in each batch. Defaults to 1.
@@ -194,7 +194,7 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
             "stimulusPaths": stimulus_paths,
             "batchSize": batch_size,
-            "comparisonType": ComparisonType(comparison).value,
+            "comparisonType": ComparisonType(comparison_type).value,
             "unchangedActivationThreshold": str(unchanged_activation_threshold),
         }
         if layer_names is not None:
