@@ -114,7 +114,7 @@ class AuthentricsCallback(TrainerCallback):
         static_analysis = self.session.static.static_analysis(
             project_id=self.project["id"],
             checkpoint_id=files[-1]["id"],
-            comparison="CHOSEN",
+            comparison_type="CHOSEN",
         )
 
         self.logger.info("Summary status of the current saved checkpoint...")
