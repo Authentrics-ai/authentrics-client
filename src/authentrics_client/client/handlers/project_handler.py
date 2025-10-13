@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from pathlib import Path
-
-from ..types import FileType, generate_multipart_json
+from ..types import FileType
 from .base_handler import BaseHandler
 
 __all__ = ["ProjectHandler"]
@@ -19,9 +17,16 @@ class ProjectHandler(BaseHandler):
         """Get a project by ID."""
         return self.get(f"/project/{project_id}").json()
 
-    def get_model_metadata(self, project_id: str) -> dict:
-        """Get the metadata for a project's model."""
-        return self.get(f"/project/{project_id}/metadata").json()
+    def get_model_metadata(self, project_id: str) -> dict | None:
+        """Get the metadata for a project's model.
+
+        Returns:
+            The metadata for a project's model, or None if the project has no metadata.
+        """
+        response = self.get(f"/project/{project_id}/metadata")
+        if len(response.content) == 0:
+            return None
+        return response.json()
 
     def get_project_by_name(self, name: str) -> dict | None:
         """Get a project by name."""
