@@ -440,3 +440,52 @@ class DynamicHandler(BaseHandler):
             "/dynamic_analysis/moe/batch",
             json=data,
         ).json()
+
+    def zero_train_optimizer(
+        self,
+        project_id: str,
+        scaling_factor_limit: float,
+        *,
+        stimulus_paths: list[str],
+        expected_output_path: str,
+        batch_size: int = 1,
+        inference_config: dict | str | None = None,
+        **kwargs,
+    ) -> dict:
+        """Run a zero-train optimizer analysis for multiple external stimulus files.
+
+        Args:
+            project_id: The ID of the project to analyze.
+            scaling_factor_limit: The limit on the scaling factor of the change to the
+            checkpoint. Must be greater than 0.0.
+            stimulus_paths: List of paths to external stimulus files to analyze, stored
+            in the same bucket as the checkpoint.
+            expected_output_path: Path to the expected output file in the same bucket as
+            the checkpoint. Currently must be a CSV file of the expected output tensor.
+            batch_size: Number of files to process in each batch. Defaults to 1.
+            inference_config: Optional inference configuration to use for the analysis.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
+
+        Returns:
+            dict: The analysis results.
+        """
+        if scaling_factor_limit <= 0.0:
+            raise ValueError("scaling_factor_limit must be greater than 0.0")
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
+        data = {
+            "projectId": project_id,
+            "scalingFactorLimit": scaling_factor_limit,
+            "stimulusPaths": stimulus_paths,
+            "expectedOutputPath": expected_output_path,
+            "batchSize": batch_size,
+        }
+        if inference_config is not None:
+            data["inferenceConfigJson"] = inference_config
+        data.update(kwargs)
+
+        return self.post(
+            "/dynamic_analysis/zero_train_optimizer/batch",
+            json=data,
+        ).json()
