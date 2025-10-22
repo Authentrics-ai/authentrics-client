@@ -486,6 +486,6 @@ class DynamicHandler(BaseHandler):
         data.update(kwargs)
 
         return self.post(
-            "/dynamic_analysis/zero_train_optimizer/batch",
+            "/dynamic_analysis/zto/batch",
             json=data,
         ).json()
