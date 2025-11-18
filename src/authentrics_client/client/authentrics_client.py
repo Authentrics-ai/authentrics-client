@@ -6,6 +6,7 @@ from .base_client import BaseClient
 from .handlers import (
     AdminHandler,
     AuthenticationHandler,
+    BaseModelHandler,
     CheckpointHandler,
     DynamicHandler,
     MembershipHandler,
@@ -45,6 +46,7 @@ class AuthentricsClient(BaseClient):
         self._project = ProjectHandler(self)
         self._static = StaticHandler(self)
         self._user = UserHandler(self)
+        self._base_model = BaseModelHandler(self)
 
     @property
     def admin(self) -> AdminHandler:
@@ -60,6 +62,11 @@ class AuthentricsClient(BaseClient):
     def checkpoint(self) -> CheckpointHandler:
         """Handles checkpoint-related operations."""
         return self._checkpoint
+
+    @property
+    def base_model(self) -> BaseModelHandler:
+        """Handles base model-related operations."""
+        return self._base_model
 
     @property
     def dynamic(self) -> DynamicHandler:
