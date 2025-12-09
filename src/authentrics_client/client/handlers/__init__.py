@@ -5,6 +5,7 @@ from .checkpoint_handler import CheckpointHandler
 from .dynamic_handler import DynamicHandler
 from .membership_handler import MembershipHandler
 from .project_handler import ProjectHandler
+from .result_handler import ResultHandler
 from .static_handler import StaticHandler
 from .user_handler import UserHandler
 
@@ -18,4 +19,5 @@ __all__ = [
     "StaticHandler",
     "UserHandler",
     "BaseModelHandler",
+    "ResultHandler",
 ]
