@@ -11,6 +11,7 @@ from .handlers import (
     DynamicHandler,
     MembershipHandler,
     ProjectHandler,
+    ResultHandler,
     StaticHandler,
     UserHandler,
 )
@@ -47,6 +48,7 @@ class AuthentricsClient(BaseClient):
         self._static = StaticHandler(self)
         self._user = UserHandler(self)
         self._base_model = BaseModelHandler(self)
+        self._result = ResultHandler(self)
 
     @property
     def admin(self) -> AdminHandler:
@@ -84,6 +86,11 @@ class AuthentricsClient(BaseClient):
     def project(self) -> ProjectHandler:
         """Handles project-related operations."""
         return self._project
+
+    @property
+    def result(self) -> ResultHandler:
+        """Handler for interacting with analysis results in the Authentrics API."""
+        return self._result
 
     @property
     def static(self) -> StaticHandler:
