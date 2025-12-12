@@ -249,6 +249,93 @@ class DynamicHandler(BaseHandler):
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
 
+    def direct_inference(
+        self,
+        model_path: str,
+        format: str,
+        stimulus_path: str | Path,
+        *,
+        base_model_path: str | None = None,
+        inference_config: dict | str | None = None,
+        **kwargs,
+    ) -> dict:
+        """Run a direct inference for a single stimulus file.
+
+        Args:
+            model_path: Path to the storage location of the model file to use for inference.
+            format: The format of the model file (must match the project's model format).
+            stimulus_path: Path to the local stimulus file to analyze.
+            base_model_path: Path to the storage location of the base model file to use for inference.
+            inference_config: Optional inference configuration to use for inference.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
+
+        Returns:
+            dict: The analysis results.
+
+        Raises:
+            FileNotFoundError: If the stimulus file does not exist.
+        """
+        stimulus_path = Path(stimulus_path)
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
+        if not stimulus_path.exists():
+            raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
+
+        data: dict[str, Any] = {
+            "modelPath": model_path,
+            "format": format,
+        }
+        if base_model_path is not None:
+            data["baseModelPath"] = base_model_path
+        if inference_config is not None:
+            data["inferenceConfigJson"] = inference_config
+        data.update(kwargs)
+
+        return self.post(
+            "/dynamic_analysis/inference",
+            files=generate_multipart_json(stimulus_path, **data),
+        ).json()
+
+    def batch_direct_inference(
+        self,
+        model_path: str,
+        format: str,
+        stimulus_paths: list[str],
+        *,
+        base_model_path: str | None = None,
+        inference_config: dict | str | None = None,
+        batch_size: int = 1,
+        **kwargs,
+    ) -> dict:
+        """Run a direct inference for multiple external stimulus files.
+
+        Args:
+            model_path: Path to the storage location of the model file to use for inference.
+            format: The format of the model file (must match the project's model format).
+            stimulus_paths: List of paths to external stimulus files to analyze, stored
+            in the same bucket as the model.
+            base_model_path: Path to the storage location of the base model file to use for inference.
+            inference_config: Optional inference configuration to use for inference.
+            If a string is provided, it is assumed to be a JSON string and will be parsed
+            as a dictionary.
+        """
+        if isinstance(inference_config, dict):
+            inference_config = json.dumps(inference_config)
+        data = {
+            "modelPath": model_path,
+            "format": format,
+            "stimulusPaths": stimulus_paths,
+            "batchSize": batch_size,
+        }
+        if base_model_path is not None:
+            data["baseModelPath"] = base_model_path
+        if inference_config is not None:
+            data["inferenceConfigJson"] = inference_config
+        data.update(kwargs)
+
+        return self.post("/dynamic_analysis/inference/batch", json=data).json()
+
     def sensitivity_analysis(
         self,
         project_id: str,
