@@ -262,10 +262,12 @@ class DynamicHandler(BaseHandler):
         """Run a direct inference for a single stimulus file.
 
         Args:
-            model_path: Path to the storage location of the model file to use for inference.
+            model_path: Path to the storage location of the model file to use for
+            inference.
             format: The format of the model file (must match the project's model format).
             stimulus_path: Path to the local stimulus file to analyze.
-            base_model_path: Path to the storage location of the base model file to use for inference.
+            base_model_path: Path to the storage location of the base model file to use
+            for inference.
             inference_config: Optional inference configuration to use for inference.
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
@@ -311,11 +313,13 @@ class DynamicHandler(BaseHandler):
         """Run a direct inference for multiple external stimulus files.
 
         Args:
-            model_path: Path to the storage location of the model file to use for inference.
+            model_path: Path to the storage location of the model file to use for
+            inference.
             format: The format of the model file (must match the project's model format).
             stimulus_paths: List of paths to external stimulus files to analyze, stored
             in the same bucket as the model.
-            base_model_path: Path to the storage location of the base model file to use for inference.
+            base_model_path: Path to the storage location of the base model file to use
+            for inference.
             inference_config: Optional inference configuration to use for inference.
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
