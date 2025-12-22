@@ -52,7 +52,7 @@ class StaticHandler(BaseHandler):
             data["weightNames"] = weight_names
         if bias_names is not None:
             data["biasNames"] = bias_names
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post("/static_analysis", json=data).json()
 
@@ -82,7 +82,7 @@ class StaticHandler(BaseHandler):
             "projectId": project_id,
             "fileIds": checkpoints_to_exclude,
         }
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         new_checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -132,7 +132,7 @@ class StaticHandler(BaseHandler):
             "fileIds": checkpoints_to_tune,
             "scalingFactors": scaling_factors,
         }
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         new_checkpoint_path = Path(new_checkpoint_path)
         if new_checkpoint_path.exists() and not overwrite:

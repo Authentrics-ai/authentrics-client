@@ -75,7 +75,7 @@ class ProjectHandler(BaseHandler):
             data["description"] = description
         if model_format is not None:
             data["format"] = FileType(model_format).value
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.patch(
             "/project",

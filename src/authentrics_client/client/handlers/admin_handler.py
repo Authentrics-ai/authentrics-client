@@ -84,7 +84,7 @@ class AdminHandler(BaseHandler):
             data["roles"] = roles
         if enabled is not None:
             data["enabled"] = enabled
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
         self.patch(f"/api/auth/admin/{user_id}", json=data)
 
     def delete_user(self, user_id: str, email: str) -> None:
@@ -106,7 +106,7 @@ class AdminHandler(BaseHandler):
             data["roles"] = roles
         if enabled is not None:
             data["enabled"] = enabled
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
         self.patch(f"/api/auth/admin/user/{user_id}", json=data)
 
     def get_user_by_email(self, email: str) -> dict | None:

@@ -52,7 +52,7 @@ class CheckpointHandler(BaseHandler):
             "projectId": project_id,
             "format": FileType(model_format).value,
         }
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
         if checkpoint_name is not None:
             data["fileName"] = checkpoint_name
         if tag is not None:
@@ -205,7 +205,7 @@ class CheckpointHandler(BaseHandler):
             data["tag"] = tag
         if model_format is not None:
             data["format"] = FileType(model_format).value
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.patch(
             "/project/file",
@@ -243,7 +243,7 @@ class CheckpointHandler(BaseHandler):
             "format": FileType(model_format).value,
             "fileName": file_name or file_path.rsplit("/", 1)[-1],
         }
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
         if tag is not None:
             data["tag"] = tag
 
@@ -277,7 +277,7 @@ class CheckpointHandler(BaseHandler):
             data["fileName"] = file_name
         if tag is not None:
             data["tag"] = tag
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.patch(
             "/project/file/external",
@@ -292,5 +292,5 @@ class CheckpointHandler(BaseHandler):
             checkpoint_id: The ID of the checkpoint to trigger the file event for.
         """
         data = {"projectId": project_id, "fileId": checkpoint_id}
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
         self.post("/project/file_event", json=data)

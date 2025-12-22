@@ -38,7 +38,7 @@ class MembershipHandler(BaseHandler):
     ) -> dict:
         """Update a member's details on a project."""
         data = {"permissions": permissions}
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.patch(
             f"/project/{project_id}/user/{user_id}",

@@ -34,6 +34,6 @@ class UserHandler(BaseHandler):
             data["lastName"] = last_name
         if password is not None:
             data["password"] = password
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         self.patch("/api/auth/user", json=data)
