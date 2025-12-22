@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
@@ -45,8 +44,6 @@ class DynamicHandler(BaseHandler):
             FileNotFoundError: If the stimulus file does not exist.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -55,10 +52,10 @@ class DynamicHandler(BaseHandler):
             "fileId": checkpoint_id,
         }
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
         if layer_names is not None:
             data["layerNames"] = layer_names
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/comparative",
@@ -93,8 +90,6 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -102,10 +97,10 @@ class DynamicHandler(BaseHandler):
             "batchSize": batch_size,
         }
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
         if layer_names is not None:
             data["layerNames"] = layer_names
-        data.update(kwargs)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post("/dynamic_analysis/comparative/batch", json=data).json()
 
@@ -134,8 +129,6 @@ class DynamicHandler(BaseHandler):
             as a dictionary.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -147,8 +140,8 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/contribution",
@@ -187,8 +180,6 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -200,8 +191,8 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/contribution/batch",
@@ -233,8 +224,6 @@ class DynamicHandler(BaseHandler):
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -244,8 +233,8 @@ class DynamicHandler(BaseHandler):
         if layer_names is not None:
             data["layerNames"] = layer_names
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post("/dynamic_analysis/correlation/batch", json=data).json()
 
@@ -279,8 +268,6 @@ class DynamicHandler(BaseHandler):
             FileNotFoundError: If the stimulus file does not exist.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -291,8 +278,8 @@ class DynamicHandler(BaseHandler):
         if base_model_path is not None:
             data["baseModelPath"] = base_model_path
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/inference",
@@ -324,8 +311,6 @@ class DynamicHandler(BaseHandler):
             If a string is provided, it is assumed to be a JSON string and will be parsed
             as a dictionary.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "modelPath": model_path,
             "format": format,
@@ -335,8 +320,8 @@ class DynamicHandler(BaseHandler):
         if base_model_path is not None:
             data["baseModelPath"] = base_model_path
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post("/dynamic_analysis/inference/batch", json=data).json()
 
@@ -365,8 +350,6 @@ class DynamicHandler(BaseHandler):
         means the influence of the checkpoint is fully removed (as in
         `StaticHandler.exclude()`).
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         stimulus_path = Path(stimulus_path)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
@@ -377,8 +360,8 @@ class DynamicHandler(BaseHandler):
             "scalingFactor": str(scaling_factor),
         }
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/sensitivity",
@@ -411,8 +394,6 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -421,8 +402,8 @@ class DynamicHandler(BaseHandler):
             "scalingFactor": str(scaling_factor),
         }
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/sensitivity/batch",
@@ -457,8 +438,6 @@ class DynamicHandler(BaseHandler):
             as a dictionary.
         """
         stimulus_path = Path(stimulus_path)
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         if not stimulus_path.exists():
             raise FileNotFoundError(f"Stimulus file {stimulus_path} not found")
 
@@ -471,8 +450,8 @@ class DynamicHandler(BaseHandler):
         if num_experts is not None:
             data["numExperts"] = num_experts
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/moe",
@@ -511,8 +490,6 @@ class DynamicHandler(BaseHandler):
         Returns:
             dict: The analysis results.
         """
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "fileId": checkpoint_id,
@@ -524,8 +501,8 @@ class DynamicHandler(BaseHandler):
         if num_experts is not None:
             data["numExperts"] = num_experts
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/moe/batch",
@@ -563,8 +540,6 @@ class DynamicHandler(BaseHandler):
         """
         if scaling_factor_limit <= 0.0:
             raise ValueError("scaling_factor_limit must be greater than 0.0")
-        if isinstance(inference_config, dict):
-            inference_config = json.dumps(inference_config)
         data = {
             "projectId": project_id,
             "scalingFactorLimit": scaling_factor_limit,
@@ -573,8 +548,8 @@ class DynamicHandler(BaseHandler):
             "batchSize": batch_size,
         }
         if inference_config is not None:
-            data["inferenceConfigJson"] = inference_config
-        data.update(kwargs)
+            data["inferenceConfigJson"] = self._convert_dict_to_json(inference_config)
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
 
         return self.post(
             "/dynamic_analysis/zto/batch",
