@@ -1,3 +1,6 @@
+import json
+from typing import Any
+
 from ..base_client import BaseClient
 
 __all__ = ["BaseHandler"]
@@ -43,3 +46,44 @@ class BaseHandler:
     def patch(self, route: str, **kwargs):
         """Make a PATCH request."""
         return self._client.patch(route, **kwargs)
+
+    # Private helper methods for data transformation
+    @staticmethod
+    def _to_camel_case(snake_str: str) -> str:
+        """Convert snake_case string to camelCase."""
+        components = snake_str.split('_')
+        return components[0] + ''.join(x.capitalize() for x in components[1:])
+
+    @staticmethod
+    def _convert_dict_to_json(value: Any) -> Any:
+        """Convert dict values to JSON strings, leave other types unchanged.
+
+        Args:
+            value: Value that may be a dict
+
+        Returns:
+            JSON string if value is a dict, otherwise the original value
+        """
+        if isinstance(value, dict):
+            return json.dumps(value)
+        return value
+
+    def _convert_kwargs_to_camel_case(self, kwargs: dict) -> dict:
+        """Convert snake_case keys in kwargs to camelCase.
+
+        Args:
+            kwargs: Dictionary with potentially snake_case keys
+
+        Returns:
+            Dictionary with camelCase keys
+        """
+        result = {}
+        for key, value in kwargs.items():
+            if '_' in key:
+                # Standard camelCase conversion
+                camel_key = self._to_camel_case(key)
+            else:
+                # Already camelCase or no conversion needed
+                camel_key = key
+            result[camel_key] = value
+        return result
