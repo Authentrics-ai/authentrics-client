@@ -39,6 +39,57 @@ class CheckpointHandler(BaseHandler):
         Note:
             If the checkpoint is a directory, e.g., a 🤗 checkpoint, please tar it first.
         """
+        if self._client.api_version == "v2":
+            return self._add_checkpoint_v2(
+                project_id=project_id,
+                file_path=file_path,
+                model_format=model_format,
+                checkpoint_name=checkpoint_name,
+                tag=tag,
+                **kwargs,
+            )
+
+        file_path = Path(file_path)
+        if file_path.is_dir():
+            raise ValueError(
+                f"File {file_path} is a directory."
+                " If this is a 🤗 checkpoint, please tar it first."
+            )
+        if not file_path.is_file():
+            raise FileNotFoundError(f"File {file_path} not found")
+
+        data = {
+            "projectId": project_id,
+            "format": FileType(model_format).value,
+        }
+        data.update(self._convert_kwargs_to_camel_case(kwargs))
+        if checkpoint_name is not None:
+            data["fileName"] = checkpoint_name
+        if tag is not None:
+            data["tag"] = tag
+
+        return self.post(
+            "/project/file",
+            files=generate_multipart_json(file_path, **data),
+        ).json()
+
+    def _add_checkpoint_v2(
+        self,
+        project_id: str,
+        file_path: str | Path,
+        model_format: str | FileType,
+        *,
+        checkpoint_name: str | None = None,
+        tag: str | None = None,
+        **kwargs,
+    ) -> dict:
+        """V2 implementation of add_checkpoint.
+
+        Currently mirrors unversioned behavior (same path and payload). When the
+        gateway v2 endpoint diverges (e.g. different path or request shape), update
+        this method only; the public add_checkpoint() dispatches here when
+        api_version is \"v2\".
+        """
         file_path = Path(file_path)
         if file_path.is_dir():
             raise ValueError(
