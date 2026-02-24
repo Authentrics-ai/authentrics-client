@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import time
 
@@ -15,9 +17,16 @@ def parse_url(url: str) -> str:
     return parsed_url.url.rstrip("/")
 
 
-def post_login(base_url: str, username: str, password: str) -> str:
+def post_login(
+    base_url: str, username: str, password: str, api_version: str | None = None
+) -> str:
+    version = (api_version or "").strip().lower() or None
+    if version == "v2":
+        login_url = f"{base_url}/api/v2/auth/login"
+    else:
+        login_url = f"{base_url}/api/auth/login"
     response = requests.post(
-        base_url + "/api/auth/login",
+        login_url,
         json={"username": username, "password": password},
     )
     response.raise_for_status()
@@ -47,13 +56,19 @@ def store_token(token: str, url: str):
     confirmation_prompt=True,
     help="Your password",
 )
-def login(url, username, password):
+@click.option(
+    "--api-version",
+    type=click.Choice(["v2"]),
+    default=None,
+    help="API version (e.g. v2). Omit for unversioned (legacy) paths.",
+)
+def login(url, username, password, api_version):
     """Simple CLI to take a username and password securely."""
     click.echo(f"Username: {username}")
     click.echo("Password received securely!")
 
     base_url = parse_url(url)
-    token = post_login(base_url, username, password)
+    token = post_login(base_url, username, password, api_version=api_version)
     store_token(token, base_url)
 
 
