@@ -46,7 +46,7 @@ class AuthenticationHandler(BaseHandler):
             password = getpass()
 
         token = self.post(
-            "/api/auth/login",
+            "/auth/login",
             json={"username": username, "password": password},
         ).content.decode()
         self._validate_and_set_token(token)
@@ -62,7 +62,7 @@ class AuthenticationHandler(BaseHandler):
     ) -> None:
         """Register a new user."""
         self.post(
-            "/api/auth/register",
+            "/auth/register",
             json={
                 "username": username,
                 "emailAddress": email,
@@ -87,14 +87,14 @@ class AuthenticationHandler(BaseHandler):
 
         # Is this a valid user token?
         try:
-            self.get("/api/auth/user")
+            self.get("/auth/user")
             return
         except requests.HTTPError:
             pass
 
         # Is this a valid admin token?
         try:
-            self.get("/api/auth/admin")
+            self.get("/auth/admin")
             return
         except requests.HTTPError:
             pass

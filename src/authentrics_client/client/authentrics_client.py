@@ -18,6 +18,8 @@ from .handlers import (
 
 __all__ = ["AuthentricsClient"]
 
+API_V2_BASE = "/api/v2"
+
 
 class AuthentricsClient(BaseClient):
     """A client for interacting with the Authentrics API.
@@ -28,15 +30,25 @@ class AuthentricsClient(BaseClient):
     use the `json` keyword argument.
     """
 
-    def __init__(self, base_url: str, proxy_url: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        base_url: str,
+        proxy_url: Optional[str] = None,
+        api_version: Optional[str] = None,
+    ) -> None:
         """Initialize the Authentrics client.
 
         Args:
             base_url: The base URL of the Authentrics API.
             proxy_url: Optional proxy URL to use for requests. If not provided, no proxy
             will be used.
+            api_version: Optional API version (e.g. "v2"). If None, unversioned paths
+            are used for backward compatibility.
         """
         super().__init__(base_url, proxy_url)
+        self._api_version = (
+            api_version.strip().lower() if api_version else None
+        )
         self._session.headers["clientName"] = "authrx-client"
 
         self._admin = AdminHandler(self)
@@ -49,6 +61,29 @@ class AuthentricsClient(BaseClient):
         self._user = UserHandler(self)
         self._base_model = BaseModelHandler(self)
         self._result = ResultHandler(self)
+
+    @property
+    def api_version(self) -> Optional[str]:
+        """The API version in use (e.g. "v2"), or None for unversioned paths."""
+        return self._api_version
+
+    def _full_path(self, resource_path: str) -> str:
+        """Convert a resource path to the full request path.
+
+        Leading slashes on resource_path are normalized (stripped) before building.
+        When api_version is "v2", returns /api/v2/{resource_path}.
+        When unversioned, uses legacy two-shape rule: auth* -> /api/{path}, else /{path}.
+        """
+        path = resource_path.lstrip("/")
+        if self._api_version == "v2":
+            return f"{API_V2_BASE}/{path}"
+        if path.startswith("auth"):
+            return f"/api/{path}"
+        return f"/{path}"
+
+    def _request(self, request_method, route: str, **kwargs):
+        full_route = self._full_path(route)
+        return super()._request(request_method, full_route, **kwargs)
 
     @property
     def admin(self) -> AdminHandler:

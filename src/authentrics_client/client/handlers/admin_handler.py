@@ -15,7 +15,7 @@ class AdminHandler(BaseHandler):
 
     def get_all_admins(self) -> list[dict]:
         """Get the info of all admins."""
-        return self.get("/api/auth/admin").json()
+        return self.get("/auth/admin").json()
 
     def create_admin(
         self,
@@ -28,7 +28,7 @@ class AdminHandler(BaseHandler):
     ) -> None:
         """Create a new admin user."""
         self.post(
-            "/api/auth/admin",
+            "/auth/admin",
             json={
                 "username": username,
                 "emailAddress": email,
@@ -41,7 +41,7 @@ class AdminHandler(BaseHandler):
 
     def get_all_users(self) -> list[dict]:
         """Get all users."""
-        return self.get("/api/auth/admin/user").json()
+        return self.get("/auth/admin/user").json()
 
     def create_user(
         self,
@@ -54,7 +54,7 @@ class AdminHandler(BaseHandler):
     ) -> None:
         """Create a new user."""
         self.post(
-            "/api/auth/admin/user",
+            "/auth/admin/user",
             json={
                 "username": username,
                 "emailAddress": email,
@@ -67,7 +67,7 @@ class AdminHandler(BaseHandler):
 
     def delete_admin(self, user_id: str, email: str) -> None:
         """Delete a user."""
-        self.delete(f"/api/auth/admin/{user_id}", json={"emailAddress": email})
+        self.delete(f"/auth/admin/{user_id}", json={"emailAddress": email})
 
     def update_admin(
         self,
@@ -85,11 +85,11 @@ class AdminHandler(BaseHandler):
         if enabled is not None:
             data["enabled"] = enabled
         data.update(self._convert_kwargs_to_camel_case(kwargs))
-        self.patch(f"/api/auth/admin/{user_id}", json=data)
+        self.patch(f"/auth/admin/{user_id}", json=data)
 
     def delete_user(self, user_id: str, email: str) -> None:
         """Delete a user."""
-        self.delete(f"/api/auth/admin/user/{user_id}", json={"emailAddress": email})
+        self.delete(f"/auth/admin/user/{user_id}", json={"emailAddress": email})
 
     def update_user(
         self,
@@ -107,7 +107,7 @@ class AdminHandler(BaseHandler):
         if enabled is not None:
             data["enabled"] = enabled
         data.update(self._convert_kwargs_to_camel_case(kwargs))
-        self.patch(f"/api/auth/admin/user/{user_id}", json=data)
+        self.patch(f"/auth/admin/user/{user_id}", json=data)
 
     def get_user_by_email(self, email: str) -> dict | None:
         """Get a user by email."""

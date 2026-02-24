@@ -10,7 +10,7 @@ class UserHandler(BaseHandler):
 
     def get_user(self) -> dict:
         """Get the current user."""
-        return self.get("/api/auth/user").json()
+        return self.get("/auth/user").json()
 
     def update_user(
         self,
@@ -36,4 +36,4 @@ class UserHandler(BaseHandler):
             data["password"] = password
         data.update(self._convert_kwargs_to_camel_case(kwargs))
 
-        self.patch("/api/auth/user", json=data)
+        self.patch("/auth/user", json=data)
