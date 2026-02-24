@@ -21,6 +21,16 @@ __all__ = ["AuthentricsClient"]
 API_V2_BASE = "/api/v2"
 
 
+def _looks_like_api_version(value: str) -> bool:
+    """True if value looks like an API version (e.g. 'v2') and was likely passed as proxy_url by mistake."""
+    if not value or not isinstance(value, str):
+        return False
+    normalized = value.strip().lower()
+    return bool(normalized) and normalized[0] == "v" and (
+        len(normalized) == 1 or normalized[1:].isdigit()
+    )
+
+
 class AuthentricsClient(BaseClient):
     """A client for interacting with the Authentrics API.
 
@@ -28,6 +38,13 @@ class AuthentricsClient(BaseClient):
     :func:`authentrics_client.generate_multipart_json`
     function as the argument to the `files` keyword argument. For all other requests,
     use the `json` keyword argument.
+
+    **API versioning:** Pass ``api_version="v2"`` at construction to use versioned paths
+    (e.g. ``/api/v2/project``, ``/api/v2/auth/login``). Omit it or pass ``None`` for
+    unversioned (legacy) paths. The value is normalized (stripped and lowercased), so
+    ``"V2"`` is treated as ``"v2"``. After construction, the active version is available
+    as the read-only :attr:`api_version` property; use it when you need to branch on
+    version (e.g. in tests or when building version-specific logic).
     """
 
     def __init__(
@@ -45,6 +62,11 @@ class AuthentricsClient(BaseClient):
             api_version: Optional API version (e.g. "v2"). If None, unversioned paths
             are used for backward compatibility.
         """
+        if proxy_url is not None and _looks_like_api_version(proxy_url):
+            raise ValueError(
+                "Pass api_version as a keyword argument: "
+                "AuthentricsClient(base_url, api_version=\"v2\")"
+            )
         super().__init__(base_url, proxy_url)
         self._api_version = (
             api_version.strip().lower() if api_version else None
@@ -64,7 +86,13 @@ class AuthentricsClient(BaseClient):
 
     @property
     def api_version(self) -> Optional[str]:
-        """The API version in use (e.g. "v2"), or None for unversioned paths."""
+        """The API version in use (e.g. "v2"), or None for unversioned paths.
+
+        Read-only. Set at construction via the ``api_version`` argument; the stored
+        value is normalized (stripped and lowercased). Use this when you need to know
+        which path set the client is using (e.g. branching in code, or asserting
+        version in tests).
+        """
         return self._api_version
 
     def _full_path(self, resource_path: str) -> str:
