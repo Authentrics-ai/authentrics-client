@@ -51,8 +51,8 @@ class BaseHandler:
     @staticmethod
     def _to_camel_case(snake_str: str) -> str:
         """Convert snake_case string to camelCase."""
-        components = snake_str.split('_')
-        return components[0] + ''.join(x.capitalize() for x in components[1:])
+        components = snake_str.split("_")
+        return components[0] + "".join(x.capitalize() for x in components[1:])
 
     @staticmethod
     def _convert_dict_to_json(value: Any) -> Any:
@@ -79,7 +79,7 @@ class BaseHandler:
         """
         result = {}
         for key, value in kwargs.items():
-            if '_' in key:
+            if "_" in key:
                 # Standard camelCase conversion
                 camel_key = self._to_camel_case(key)
             else:

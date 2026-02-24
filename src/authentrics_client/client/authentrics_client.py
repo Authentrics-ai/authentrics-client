@@ -22,12 +22,16 @@ API_V2_BASE = "/api/v2"
 
 
 def _looks_like_api_version(value: str) -> bool:
-    """True if value looks like an API version (e.g. 'v2') and was likely passed as proxy_url by mistake."""
+    """True if value looks like an API version (e.g. 'v2') and was likely passed as
+    proxy_url by mistake.
+    """
     if not value or not isinstance(value, str):
         return False
     normalized = value.strip().lower()
-    return bool(normalized) and normalized[0] == "v" and (
-        len(normalized) == 1 or normalized[1:].isdigit()
+    return (
+        bool(normalized)
+        and normalized[0] == "v"
+        and (len(normalized) == 1 or normalized[1:].isdigit())
     )
 
 
@@ -65,12 +69,10 @@ class AuthentricsClient(BaseClient):
         if proxy_url is not None and _looks_like_api_version(proxy_url):
             raise ValueError(
                 "Pass api_version as a keyword argument: "
-                "AuthentricsClient(base_url, api_version=\"v2\")"
+                'AuthentricsClient(base_url, api_version="v2")'
             )
         super().__init__(base_url, proxy_url)
-        self._api_version = (
-            api_version.strip().lower() if api_version else None
-        )
+        self._api_version = api_version.strip().lower() if api_version else None
         self._session.headers["clientName"] = "authrx-client"
 
         self._admin = AdminHandler(self)

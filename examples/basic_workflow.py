@@ -5,6 +5,7 @@ Demonstrates: login, creating a project, adding checkpoints, fetching project
 details, and running static analysis. Use real file paths and credentials when
 running; the versioned client is optional.
 """
+
 import authentrics_client as authrx
 
 # Initialize the client (optionally with API version for versioned paths).
